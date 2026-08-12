@@ -174,6 +174,30 @@
     background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
     padding-right: 36px;
   }
+  /* 标签选择 */
+  .tag-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-opt {
+    padding: 5px 12px; background: #f1f5f9; color: var(--text-light);
+    border: 1px solid var(--border); border-radius: 99px;
+    font-size: 12px; cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .tag-opt:hover { border-color: var(--primary); color: var(--primary); }
+  .tag-opt.active { background: var(--gradient); color: #fff; border-color: transparent; }
+  .tag-selected { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    color: var(--primary-dark); border-radius: 99px; font-size: 12px; font-weight: 600;
+  }
+  .tag-chip .x { cursor: pointer; opacity: 0.6; font-size: 14px; line-height: 1; }
+  .tag-chip .x:hover { opacity: 1; }
+  /* 卡片上的标签 */
+  .item .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+  .item .tags .tag {
+    padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500;
+    background: #eef2ff; color: var(--primary-dark);
+  }
+  .item.blacklist .tags .tag { background: #f3f4f6; color: #6b7280; }
   .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .modal-foot { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
   .btn-primary { padding: 10px 20px; background: var(--gradient); color: #fff;
@@ -296,6 +320,20 @@
       <option>数据中台</option>
       <option>人事</option>
     </select>
+    <select id="tagFilter">
+      <option value="">全部标签</option>
+      <option>销售能力强</option>
+      <option>销冠</option>
+      <option>高收入</option>
+      <option>未婚</option>
+      <option>有狼性</option>
+      <option>经验丰富</option>
+      <option>有资源</option>
+      <option>985/211</option>
+      <option>本地</option>
+      <option>可立即到岗</option>
+      <option>在线投递</option>
+    </select>
     <button class="refresh" id="refreshBtn" onclick="loadList(true)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
@@ -350,6 +388,23 @@
         <div class="form-row"><label>状态</label>
           <select id="fStatus"><option>在库</option><option>面试</option><option>已联系</option></select>
         </div>
+      </div>
+      <div class="form-row">
+        <label>备选标签 <span style="font-weight:400;color:var(--text-lighter);font-size:12px">点选预设 / 自定义后回车</span></label>
+        <div class="tag-picker" id="tagPicker">
+          <span class="tag-opt" data-tag="销售能力强">销售能力强</span>
+          <span class="tag-opt" data-tag="销冠">销冠</span>
+          <span class="tag-opt" data-tag="高收入">高收入</span>
+          <span class="tag-opt" data-tag="未婚">未婚</span>
+          <span class="tag-opt" data-tag="有狼性">有狼性</span>
+          <span class="tag-opt" data-tag="经验丰富">经验丰富</span>
+          <span class="tag-opt" data-tag="有资源">有资源</span>
+          <span class="tag-opt" data-tag="985/211">985/211</span>
+          <span class="tag-opt" data-tag="本地">本地</span>
+          <span class="tag-opt" data-tag="可立即到岗">可立即到岗</span>
+        </div>
+        <div class="tag-selected" id="tagSelected" style="display:none"></div>
+        <input type="text" id="fTagInput" placeholder="自定义标签（回车添加）" style="margin-top:8px">
       </div>
       <div class="form-row"><label>备注</label><textarea id="fNotes" placeholder="技能 / 经历 / 沟通要点..."></textarea></div>
       <div class="form-row"><label>录入人</label><input type="text" id="fCreatedBy" placeholder="如：人事-小李"></div>
@@ -555,6 +610,7 @@ function renderList() {
   const kw = document.getElementById('searchInput').value.trim().toLowerCase();
   const status = document.getElementById('statusFilter').value;
   const position = document.getElementById('positionFilter').value;
+  const tag = document.getElementById('tagFilter').value;
   let items = allItems;
   if (kw) items = items.filter(t =>
     (t.name||'').toLowerCase().includes(kw) ||
@@ -565,6 +621,7 @@ function renderList() {
   );
   if (status) items = items.filter(t => t.status === status);
   if (position) items = items.filter(t => t.position === position);
+  if (tag) items = items.filter(t => (',' + (t.tags||'') + ',').includes(',' + tag + ','));
 
   // 统计（用全部数据，不是过滤后）
   const total = allItems.length;
@@ -587,6 +644,8 @@ function renderList() {
   listEl.innerHTML = items.map(t => {
     const isBlacklist = t.status === '黑名单';
     const initial = (t.name || '?').slice(0, 1).toUpperCase();
+    const tags = (t.tags || '').split(',').map(s => s.trim()).filter(Boolean);
+    const tagsHtml = tags.length ? `<div class="tags">${tags.map(x => `<span class="tag">🏷️ ${escape(x)}</span>`).join('')}</div>` : '';
     const actions = isAdmin() ? (
       isBlacklist
         ? `<button class="success" onclick="restoreTalent(${t.id})">解除</button><button class="danger" onclick="deleteTalent(${t.id})">删除</button>`
@@ -607,6 +666,7 @@ function renderList() {
           ${t.email ? `<span>📧 ${escape(t.email)}</span>` : ''}
           ${t.source ? `<span>📢 ${escape(t.source)}</span>` : ''}
         </div>
+        ${tagsHtml}
         ${t.notes ? `<div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.5">${escape(t.notes).slice(0, 100)}${t.notes.length > 100 ? '...' : ''}</div>` : ''}
       </div>
       <div class="actions">${actions}</div>
@@ -626,11 +686,46 @@ function hideForm() { document.getElementById('editModal').classList.remove('sho
 function resetForm() {
   editingId = null;
   document.getElementById('formTitle').textContent = '添加人才';
-  ['fName','fPhone','fWechat','fEmail','fNotes','fCreatedBy'].forEach(id => document.getElementById(id).value = '');
+  ['fName','fPhone','fWechat','fEmail','fNotes','fCreatedBy','fTagInput'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('fPosition').value = '';
   document.getElementById('fSource').value = '';
   document.getElementById('fRating').value = 'B';
   document.getElementById('fStatus').value = '在库';
+  setTags([]);
+}
+
+// ============ 标签管理 ============
+let currentTags = [];
+function setTags(arr) {
+  currentTags = Array.isArray(arr) ? arr.slice() : (arr || '').toString().split(',').map(s => s.trim()).filter(Boolean);
+  renderTagSelected();
+  // 同步预设高亮
+  document.querySelectorAll('.tag-opt').forEach(el => {
+    el.classList.toggle('active', currentTags.includes(el.dataset.tag));
+  });
+}
+function addTag(tag) {
+  tag = (tag || '').trim();
+  if (!tag || currentTags.includes(tag)) return;
+  currentTags.push(tag);
+  renderTagSelected();
+  // 同步预设
+  document.querySelectorAll('.tag-opt').forEach(el => {
+    if (el.dataset.tag === tag) el.classList.add('active');
+  });
+}
+function removeTag(tag) {
+  currentTags = currentTags.filter(t => t !== tag);
+  renderTagSelected();
+  document.querySelectorAll('.tag-opt').forEach(el => {
+    if (el.dataset.tag === tag) el.classList.remove('active');
+  });
+}
+function renderTagSelected() {
+  const box = document.getElementById('tagSelected');
+  if (!currentTags.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  box.style.display = 'flex';
+  box.innerHTML = currentTags.map(t => `<span class="tag-chip">${escape(t)}<span class="x" onclick="removeTag('${escape(t).replace(/'/g, "\\'")}')">×</span></span>`).join('');
 }
 function editTalent(id) {
   if (!isAdmin()) return;
@@ -648,6 +743,7 @@ function editTalent(id) {
   document.getElementById('fStatus').value = t.status || '在库';
   document.getElementById('fNotes').value = t.notes || '';
   document.getElementById('fCreatedBy').value = t.created_by || '';
+  setTags(t.tags || '');
   document.getElementById('editModal').classList.add('show');
 }
 async function saveTalent() {
@@ -664,6 +760,7 @@ async function saveTalent() {
     rating: document.getElementById('fRating').value,
     status: document.getElementById('fStatus').value,
     notes: document.getElementById('fNotes').value.trim(),
+    tags: currentTags.join(','),
     created_by: document.getElementById('fCreatedBy').value.trim(),
   };
   const btn = document.getElementById('saveBtn');
@@ -741,6 +838,23 @@ document.getElementById('searchInput').addEventListener('input', () => {
 });
 document.getElementById('statusFilter').addEventListener('change', renderList);
 document.getElementById('positionFilter').addEventListener('change', renderList);
+document.getElementById('tagFilter').addEventListener('change', renderList);
+// 标签预设点击
+document.querySelectorAll('.tag-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    const t = el.dataset.tag;
+    if (currentTags.includes(t)) removeTag(t);
+    else addTag(t);
+  });
+});
+// 自定义标签输入
+document.getElementById('fTagInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addTag(e.target.value);
+    e.target.value = '';
+  }
+});
 
 // ============ 启动 ============
 updateAuthUI();
