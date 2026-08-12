@@ -611,7 +611,7 @@
             <div class="field"><label>电子邮箱</label><input type="email" name="email" placeholder="example@xx.com"></div>
           </div>
           <div class="row">
-            <div class="field"><label>身份证号</label><input type="text" name="id_card" maxlength="18"></div>
+            <div class="field"><label>身份证号 <span class="required">*</span></label><input type="text" name="id_card" maxlength="18" required placeholder="18位身份证号"></div>
             <div class="field"><label>QQ 号</label><input type="text" name="qq"></div>
           </div>
           <div class="row">
@@ -821,6 +821,15 @@ function showToast(msg, isError, duration = 2500) {
   }, duration);
 }
 
+// 身份证号最后一位校验码（GB 11643-1999）
+function validIdCardChecksum(id) {
+  const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+  const codes = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
+  let sum = 0;
+  for (let i = 0; i < 17; i++) sum += parseInt(id[i]) * weights[i];
+  return codes[sum % 11] === id[17].toUpperCase();
+}
+
 // 导航滚动效果
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
@@ -857,6 +866,13 @@ function nextStep() {
     if (!name) return showToast('请填写姓名', true);
     if (!gender) return showToast('请选择性别', true);
     if (!phone || !/^1\d{10}$/.test(phone)) return showToast('请填写正确的11位手机号', true);
+    const idCard = form.querySelector('[name=id_card]').value.trim();
+    if (!idCard) return showToast('请填写身份证号', true);
+    if (!/^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/.test(idCard)) {
+      return showToast('身份证号格式不正确（18 位）', true);
+    }
+    // 校验最后一位校验码
+    if (!validIdCardChecksum(idCard)) return showToast('身份证号校验位不正确', true);
   } else if (currentStep === 2) {
     const form = document.getElementById('resumeForm');
     const pos = form.querySelector('[name=apply_position]').value;
