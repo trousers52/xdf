@@ -103,17 +103,17 @@
   /* 心电图线（中央跳动） */
   .ecg-line {
     position: absolute;
-    left: 50%; top: 78%;
-    transform: translate(-50%, -50%);
+    left: 50%; bottom: 30px;
+    transform: translateX(-50%);
     width: 540px; max-width: 88%;
-    height: 70px;
+    height: 60px;
     pointer-events: none; z-index: 0;
     overflow: hidden;
-    opacity: 0.7;  /* 淡一些，作为装饰不抢戏 */
+    opacity: 0.75;
   }
   .ecg-line svg { width: 100%; height: 100%; display: block; }
   @media (max-width: 600px) {
-    .ecg-line { width: 320px; height: 50px; top: 72%; }
+    .ecg-line { width: 320px; height: 50px; bottom: 20px; }
   }
   .hero-content {
     max-width: 1200px; margin: 0 auto; width: 100%;
