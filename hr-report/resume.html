@@ -413,6 +413,50 @@
   @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; gap: 28px; }
   }
+  /* 微信二维码卡片 */
+  .wechat-card {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 14px; padding: 12px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px; cursor: pointer; transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  .wechat-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: rgba(132, 204, 22, 0.5); }
+  .wechat-qr {
+    width: 64px; height: 64px; border-radius: 10px;
+    background: #fff; padding: 4px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .wechat-qr img { width: 100%; height: 100%; display: block; border-radius: 6px; }
+  .wechat-text { flex: 1; min-width: 0; }
+  .wechat-title { font-size: 13px; color: #fff; font-weight: 700; margin-bottom: 4px; }
+  .wechat-id { font-size: 12px; color: #cbd5e1; margin-bottom: 2px; }
+  .wechat-id b { color: #84cc16; font-family: monospace; }
+  .wechat-hint { font-size: 11px; color: #94a3b8; }
+  /* 二维码大图弹窗 */
+  .qr-modal-bg {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .qr-modal-bg.show { display: flex; animation: fadeIn 0.2s; }
+  .qr-modal {
+    background: #fff; border-radius: var(--radius-lg);
+    padding: 28px 28px 22px; max-width: 340px; width: 100%;
+    text-align: center; box-shadow: var(--shadow-lg);
+  }
+  .qr-modal img { width: 100%; max-width: 260px; display: block; margin: 0 auto 14px; border-radius: 8px; }
+  .qr-modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .qr-modal .id { font-size: 14px; color: var(--text-light); margin-bottom: 14px; }
+  .qr-modal .id b { color: #84cc16; font-family: monospace; font-weight: 700; }
+  .qr-modal .tip { font-size: 12px; color: var(--text-lighter); padding-top: 12px; border-top: 1px solid var(--border); }
+  .qr-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); color: #fff; border: none;
+    font-size: 20px; cursor: pointer; backdrop-filter: blur(10px);
+  }
+  .qr-close:hover { background: rgba(255,255,255,0.3); }
   /* 滚动渐入 */
   .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
   .reveal.show { opacity: 1; transform: translateY(0); }
@@ -876,9 +920,18 @@
     <div class="footer-col">
       <h4>招聘联系</h4>
       <p>📧 zhongtaibu@flipped-hz.com.cn</p>
-      <p>📱 微信 zhongtaibu_hr</p>
       <p>🏢 陕西省汉中市汉台区<br>中京国际（直播电商基地）</p>
       <p><a href="#location" style="color:#c7d2fe;text-decoration:underline;font-size:12px">📍 查看地图 / 导航</a></p>
+      <div class="wechat-card" onclick="openWechatQR()">
+        <div class="wechat-qr">
+          <img src="assets/wechat-qr.png" alt="HR 微信二维码" loading="lazy" />
+        </div>
+        <div class="wechat-text">
+          <div class="wechat-title">💬 加 HR 微信</div>
+          <div class="wechat-id">微信号：<b>zhongtaibu_hr</b></div>
+          <div class="wechat-hint">👆 扫码 / 点这里放大</div>
+        </div>
+      </div>
     </div>
     <div class="footer-col">
       <h4>快速链接</h4>
@@ -894,6 +947,17 @@
 </footer>
 
 <div class="toast" id="toast">操作成功</div>
+
+<!-- 微信二维码放大弹窗 -->
+<div class="qr-modal-bg" id="qrModal" onclick="if(event.target===this)closeWechatQR()">
+  <button class="qr-close" onclick="closeWechatQR()">×</button>
+  <div class="qr-modal">
+    <h3>💬 加 HR 微信</h3>
+    <img src="assets/wechat-qr.png" alt="HR 微信二维码" />
+    <div class="id">微信号：<b>zhongtaibu_hr</b></div>
+    <div class="tip">长按图片识别 / 用微信扫一扫<br>投递后第一时间与 HR 沟通</div>
+  </div>
+</div>
 
 <script>
 const API_BASE = 'https://translate-consultation-layer-emails.trycloudflare.com';
@@ -934,8 +998,17 @@ const io = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
+// ============ 微信二维码 ============
+function openWechatQR() {
+  document.getElementById('qrModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeWechatQR() {
+  document.getElementById('qrModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
 // ============ 地图 ============
-setTimeout(() => {
   const iframe = document.querySelector('.map-embed iframe');
   const fallback = document.getElementById('mapFallback');
   if (iframe && fallback) {
