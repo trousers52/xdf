@@ -103,21 +103,23 @@
   /* 心电图线（中央跳动） */
   .ecg-line {
     position: absolute;
-    left: 50%; top: 56%;
+    left: 50%; top: 78%;
     transform: translate(-50%, -50%);
     width: 540px; max-width: 88%;
-    height: 80px;
-    pointer-events: none; z-index: 1;
+    height: 70px;
+    pointer-events: none; z-index: 0;
     overflow: hidden;
+    opacity: 0.7;  /* 淡一些，作为装饰不抢戏 */
   }
   .ecg-line svg { width: 100%; height: 100%; display: block; }
   @media (max-width: 600px) {
-    .ecg-line { width: 320px; height: 60px; top: 54%; }
+    .ecg-line { width: 320px; height: 50px; top: 72%; }
   }
   .hero-content {
     max-width: 1200px; margin: 0 auto; width: 100%;
     position: relative; z-index: 2;
     text-align: center; color: #fff;
+    padding-top: 60px;  /* 整体下移，避开心电图 */
   }
   .hero-badge {
     display: inline-flex; align-items: center; gap: 8px;
@@ -143,6 +145,7 @@
     font-size: clamp(15px, 2vw, 19px);
     opacity: 0.95; max-width: 720px; margin: 0 auto 40px;
     font-weight: 400;
+    text-shadow: 0 2px 12px rgba(15, 23, 42, 0.6);  /* 文字阴影，让心电图穿过时仍清晰 */
   }
   .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
   .btn-hero {
