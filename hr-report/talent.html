@@ -53,6 +53,12 @@
   .header-actions .primary { background: #fff; color: var(--primary-dark); border-color: #fff; font-weight: 600; }
   .header-actions .primary:hover { background: #f8fafc; }
   .header-actions .admin-on { background: #10b981 !important; border-color: #10b981 !important; }
+  /* 未登录时吸引注意 */
+  #authBtn:not(.admin-on) { animation: pulse-soft 2s infinite; }
+  @keyframes pulse-soft {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+  }
 
   /* ========== 统计卡片 ========== */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -650,7 +656,11 @@ function renderList() {
       isBlacklist
         ? `<button class="success" onclick="restoreTalent(${t.id})">解除</button><button class="danger" onclick="deleteTalent(${t.id})">删除</button>`
         : `<button class="edit" onclick="editTalent(${t.id})">编辑</button><button class="danger" onclick="blacklistTalent(${t.id})">拉黑</button>`
-    ) : '<div class="readonly">只读</div>';
+    ) : (
+      isBlacklist
+        ? `<div class="readonly" style="padding:6px 0">只读</div>`
+        : `<button class="edit" onclick="editTalent(${t.id})" title="点击登录后编辑">🔒 编辑</button>`
+    );
     return `<div class="item ${isBlacklist ? 'blacklist' : ''}">
       <div class="avatar">${escape(initial)}</div>
       <div class="info">
@@ -728,9 +738,9 @@ function renderTagSelected() {
   box.innerHTML = currentTags.map(t => `<span class="tag-chip">${escape(t)}<span class="x" onclick="removeTag('${escape(t).replace(/'/g, "\\'")}')">×</span></span>`).join('');
 }
 function editTalent(id) {
-  if (!isAdmin()) return;
+  if (!isAdmin()) { showToast('请先登录人事专员账号', true); showAuth(); return; }
   const t = allItems.find(x => x.id === id);
-  if (!t) return;
+  if (!t) return showToast('未找到该人才', true);
   editingId = id;
   document.getElementById('formTitle').textContent = '编辑人才';
   document.getElementById('fName').value = t.name || '';
@@ -747,7 +757,7 @@ function editTalent(id) {
   document.getElementById('editModal').classList.add('show');
 }
 async function saveTalent() {
-  if (!isAdmin()) return;
+  if (!isAdmin()) { showToast('登录已过期，请重新登录', true); showAuth(); return; }
   const name = document.getElementById('fName').value.trim();
   if (!name) return showToast('请填写姓名', true);
   const data = {
@@ -786,7 +796,7 @@ async function saveTalent() {
   finally { btn.disabled = false; btn.textContent = '保存'; }
 }
 async function deleteTalent(id) {
-  if (!isAdmin()) return;
+  if (!isAdmin()) { showToast('请先登录人事专员账号', true); showAuth(); return; }
   if (!confirm('确认删除该人才？此操作不可恢复。')) return;
   try {
     const resp = await fetch(API_BASE + '/api/talent/' + id, {
@@ -801,7 +811,7 @@ async function deleteTalent(id) {
   } catch (e) { showToast('删除失败：' + e.message, true); }
 }
 async function blacklistTalent(id) {
-  if (!isAdmin()) return;
+  if (!isAdmin()) { showToast('请先登录人事专员账号', true); showAuth(); return; }
   const reason = prompt('拉黑原因（必填）:');
   if (!reason || !reason.trim()) return;
   try {
@@ -818,7 +828,7 @@ async function blacklistTalent(id) {
   } catch (e) { showToast('失败：' + e.message, true); }
 }
 async function restoreTalent(id) {
-  if (!isAdmin()) return;
+  if (!isAdmin()) { showToast('请先登录人事专员账号', true); showAuth(); return; }
   try {
     const resp = await fetch(API_BASE + '/api/talent/' + id + '/restore', {
       method: 'POST',
