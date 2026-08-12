@@ -368,48 +368,6 @@
   .footer-col a, .footer-col p { display: block; color: #94a3b8; text-decoration: none; font-size: 13px; margin-bottom: 6px; }
   .footer-col a:hover { color: #c7d2fe; }
   .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 12px; }
-  /* 地图区 */
-  .map-section { background: #fff; }
-  .map-card {
-    background: var(--card-solid); border: 1px solid var(--border);
-    border-radius: var(--radius-xl); overflow: hidden;
-    box-shadow: var(--shadow); display: grid; grid-template-columns: 1fr 1fr;
-  }
-  .map-embed {
-    position: relative; background: #f1f5f9;
-    min-height: 380px;
-  }
-  .map-embed iframe { width: 100%; height: 100%; min-height: 380px; border: 0; display: block; }
-  .map-fallback {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    pointer-events: none; opacity: 0; transition: opacity 0.3s;
-  }
-  .map-fallback.show { opacity: 1; }
-  .map-fallback .fb-icon { font-size: 48px; margin-bottom: 10px; }
-  .map-fallback .fb-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .map-fallback .fb-desc { font-size: 12px; color: var(--text-light); }
-  .map-info { padding: 32px 28px; display: flex; flex-direction: column; justify-content: center; }
-  .map-addr-main { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .map-addr-sub { font-size: 13px; color: var(--text-light); margin-bottom: 22px; }
-  .map-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-  .map-act {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 16px; background: #f8fafc; border: 1.5px solid var(--border);
-    border-radius: 12px; text-decoration: none; color: var(--text);
-    transition: all 0.2s;
-  }
-  .map-act:hover { transform: translateX(4px); border-color: var(--primary); background: #fff; box-shadow: var(--shadow); }
-  .act-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .act-name { font-size: 14px; font-weight: 600; flex: 1; }
-  .act-arrow { color: var(--text-lighter); font-size: 16px; }
-  .map-hint { font-size: 12px; color: var(--text-lighter); padding-top: 10px; border-top: 1px dashed var(--border); }
-  @media (max-width: 768px) {
-    .map-card { grid-template-columns: 1fr; }
-    .map-embed, .map-embed iframe { min-height: 280px; }
-    .map-info { padding: 20px 18px; }
-  }
   @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; gap: 28px; }
   }
@@ -651,65 +609,6 @@
   </div>
 </section>
 
-<!-- 地图定位 -->
-<section class="map-section" id="location">
-  <div class="container">
-    <div class="section-head reveal">
-      <div class="section-eyebrow">LOCATION</div>
-      <h2 class="section-title">📍 来芯动未来</h2>
-      <p class="section-desc">线下入职 / 面试导航</p>
-    </div>
-    <div class="map-card reveal">
-      <div class="map-embed">
-        <iframe
-          src="https://m.amap.com/search?query=%E6%B1%89%E4%B8%AD%E5%B8%82%E6%B1%89%E5%8F%B0%E5%8C%BA%E4%B8%AD%E4%BA%AC%E5%9B%BD%E9%99%85&city=%E6%B1%89%E4%B8%AD&src=mavis&callnative=1"
-          loading="lazy"
-          allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <div class="map-fallback" id="mapFallback">
-          <div class="fb-icon">🗺️</div>
-          <div class="fb-title">地图加载失败？</div>
-          <div class="fb-desc">点击下方按钮在新窗口打开</div>
-        </div>
-      </div>
-      <div class="map-info">
-        <div class="map-addr-main">📍 陕西省汉中市汉台区中京国际（直播电商基地）</div>
-        <div class="map-addr-sub">位于汉中市中心地段，公交 / 自驾 / 网约车均可达</div>
-        <div class="map-actions">
-          <a class="map-act" href="https://uri.amap.com/search?keyword=%E6%B1%89%E4%B8%AD%E5%B8%82%E6%B1%89%E5%8F%B0%E5%8C%BA%E4%B8%AD%E4%BA%AC%E5%9B%BD%E9%99%85&src=mavis" target="_blank" rel="noopener">
-            <span class="act-icon" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">🔵</span>
-            <span class="act-name">高德地图</span>
-            <span class="act-arrow">→</span>
-          </a>
-          <a class="map-act" href="https://api.map.baidu.com/place/search?query=%E6%B1%89%E4%B8%AD%E5%B8%82%E6%B1%89%E5%8F%B0%E5%8C%BA%E4%B8%AD%E4%BA%AC%E5%9B%BD%E9%99%85&region=%E6%B1%89%E4%B8%AD&output=html&src=mavis" target="_blank" rel="noopener">
-            <span class="act-icon" style="background:linear-gradient(135deg,#2932e1,#1e40af)">🟦</span>
-            <span class="act-name">百度地图</span>
-            <span class="act-arrow">→</span>
-          </a>
-          <a class="map-act" href="https://apis.map.qq.com/uri/v1/search?keyword=%E6%B1%89%E4%B8%AD%E5%B8%82%E6%B1%89%E5%8F%B0%E5%8C%BA%E4%B8%AD%E4%BA%AC%E5%9B%BD%E9%99%85&region=%E6%B1%89%E4%B8%AD&referer=mavis" target="_blank" rel="noopener">
-            <span class="act-icon" style="background:linear-gradient(135deg,#10b981,#047857)">🟢</span>
-            <span class="act-name">腾讯地图</span>
-            <span class="act-arrow">→</span>
-          </a>
-        </div>
-        <div class="map-hint">📱 手机端点击按钮会直接唤起对应地图 App</div>
-      </div>
-    </div>
-  </div>
-</section>
-        </div>
-      </div>
-      <div class="process-step reveal">
-        <div class="process-num">5</div>
-        <div class="process-content">
-          <h3>发放 offer 🎉</h3>
-          <p>沟通薪资、入职时间，欢迎加入芯动未来</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- 表单 -->
 <section class="form-section" id="apply">
   <div class="form-container">
@@ -921,7 +820,6 @@
       <h4>招聘联系</h4>
       <p>📧 zhongtaibu@flipped-hz.com.cn</p>
       <p>🏢 陕西省汉中市汉台区<br>中京国际（直播电商基地）</p>
-      <p><a href="#location" style="color:#c7d2fe;text-decoration:underline;font-size:12px">📍 查看地图 / 导航</a></p>
       <div class="wechat-card" onclick="openWechatQR()">
         <div class="wechat-qr">
           <img src="assets/wechat-qr.png" alt="HR 微信二维码" loading="lazy" />
@@ -1009,20 +907,7 @@ function closeWechatQR() {
 }
 
 // ============ 地图 ============
-  const iframe = document.querySelector('.map-embed iframe');
-  const fallback = document.getElementById('mapFallback');
-  if (iframe && fallback) {
-    iframe.addEventListener('error', () => fallback.classList.add('show'));
-    // 30s 内还没加载出来（X-Frame 拦截），显示 fallback
-    setTimeout(() => {
-      try {
-        if (!iframe.contentDocument || !iframe.contentDocument.body || iframe.contentDocument.body.innerHTML === '') {
-          fallback.classList.add('show');
-        }
-      } catch (e) { /* cross-origin, skip */ }
-    }, 5000);
-  }
-}, 100);
+// （地图模块已移除）
 
 let currentStep = 1;
 const totalSteps = 5;
