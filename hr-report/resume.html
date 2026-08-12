@@ -368,6 +368,36 @@
   .footer-col a, .footer-col p { display: block; color: #94a3b8; text-decoration: none; font-size: 13px; margin-bottom: 6px; }
   .footer-col a:hover { color: #c7d2fe; }
   .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 12px; }
+  .nav-btn {
+    display: inline-block; padding: 7px 16px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff; border: none; border-radius: 99px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all 0.2s; margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+  /* 地图弹窗 */
+  .map-modal {
+    background: #fff; border-radius: var(--radius-lg);
+    max-width: 460px; width: 100%; padding: 28px 24px 22px;
+    box-shadow: var(--shadow-lg); animation: fadeIn 0.25s;
+  }
+  .map-modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .map-modal-head h2 { font-size: 18px; font-weight: 700; }
+  .map-addr { font-size: 14px; color: var(--text-light); margin-bottom: 18px; padding: 10px 14px; background: #f8fafc; border-radius: 10px; border-left: 3px solid var(--primary); }
+  .map-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .map-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 18px 12px; background: #f8fafc; border: 1.5px solid var(--border);
+    border-radius: 14px; text-decoration: none; color: var(--text);
+    transition: all 0.2s; cursor: pointer; position: relative;
+  }
+  .map-opt:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow); }
+  .map-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .map-name { font-size: 14px; font-weight: 600; }
+  .map-tip { position: absolute; top: 8px; right: 8px; font-size: 10px; padding: 2px 6px; background: var(--primary); color: #fff; border-radius: 99px; opacity: 0.8; }
+  .map-foot { font-size: 12px; color: var(--text-lighter); text-align: center; }
   @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; gap: 28px; }
   }
@@ -783,7 +813,8 @@
       <h4>招聘联系</h4>
       <p>📧 zhongtaibu@flipped-hz.com.cn</p>
       <p>📱 微信 zhongtaibu_hr</p>
-      <p>🏢 杭州 · 未来科技城</p>
+      <p>🏢 <a href="#" onclick="openMap(event, '汉中市汉台区直播电商基地', '汉中市')" style="color:#c7d2fe;text-decoration:underline">汉中市汉台区直播电商基地</a></p>
+      <p><button class="nav-btn" onclick="openMap(event, '汉中市汉台区直播电商基地', '汉中市')">🧭 一键导航</button></p>
     </div>
     <div class="footer-col">
       <h4>快速链接</h4>
@@ -798,6 +829,40 @@
 </footer>
 
 <div class="toast" id="toast">操作成功</div>
+
+<!-- 地图选择弹窗 -->
+<div class="modal-bg" id="mapModal" onclick="if(event.target===this)closeMap()">
+  <div class="map-modal">
+    <div class="map-modal-head">
+      <h2>🧭 选择导航地图</h2>
+      <button class="modal-close" onclick="closeMap()">×</button>
+    </div>
+    <p class="map-addr" id="mapAddr">汉中市汉台区直播电商基地</p>
+    <div class="map-options">
+      <a class="map-opt" id="mapGaode" target="_blank" rel="noopener">
+        <div class="map-icon" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">🔵</div>
+        <div class="map-name">高德地图</div>
+        <div class="map-tip">推荐</div>
+      </a>
+      <a class="map-opt" id="mapBaidu" target="_blank" rel="noopener">
+        <div class="map-icon" style="background:linear-gradient(135deg,#2932e1,#1e40af)">🟦</div>
+        <div class="map-name">百度地图</div>
+        <div class="map-tip">普及广</div>
+      </a>
+      <a class="map-opt" id="mapTencent" target="_blank" rel="noopener">
+        <div class="map-icon" style="background:linear-gradient(135deg,#10b981,#047857)">🟢</div>
+        <div class="map-name">腾讯地图</div>
+        <div class="map-tip">微信内</div>
+      </a>
+      <a class="map-opt" id="mapApple" target="_blank" rel="noopener">
+        <div class="map-icon" style="background:linear-gradient(135deg,#6b7280,#374151)">🍎</div>
+        <div class="map-name">Apple Maps</div>
+        <div class="map-tip">iOS</div>
+      </a>
+    </div>
+    <p class="map-foot">点击图标跳转：手机端唤起对应 App，PC 端打开网页版地图</p>
+  </div>
+</div>
 
 <script>
 const API_BASE = 'https://translate-consultation-layer-emails.trycloudflare.com';
@@ -837,6 +902,25 @@ const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ============ 地图导航 ============
+function openMap(e, address, city) {
+  if (e) e.preventDefault();
+  document.getElementById('mapAddr').textContent = address;
+  const enc = encodeURIComponent(address);
+  const encCity = encodeURIComponent(city || '');
+  // 各家地图的 URL scheme
+  // 高德：会唤起高德 App，PC 端打开网页
+  document.getElementById('mapGaode').href = `https://uri.amap.com/search?keyword=${enc}&city=${encCity}&src=mavis&callnative=1`;
+  // 百度：会唤起百度地图 App
+  document.getElementById('mapBaidu').href = `https://api.map.baidu.com/place/search?query=${enc}&region=${encCity}&output=html&src=mavis`;
+  // 腾讯：会唤起腾讯地图 App
+  document.getElementById('mapTencent').href = `https://apis.map.qq.com/uri/v1/search?keyword=${enc}&region=${encCity}&referer=mavis`;
+  // Apple Maps：仅 iOS/Mac 有效
+  document.getElementById('mapApple').href = `https://maps.apple.com/?q=${enc}`;
+  document.getElementById('mapModal').classList.add('show');
+}
+function closeMap() { document.getElementById('mapModal').classList.remove('show'); }
 
 let currentStep = 1;
 const totalSteps = 5;
