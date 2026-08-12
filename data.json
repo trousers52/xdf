@@ -1,11 +1,11 @@
 {
   "brand": "芯动未来",
-  "top_tag": "7月夏战",
+  "top_tag": "8月夏战",
   "title_line1": "一鼓作气",
   "title_line2": "寸土必争",
   "today": {
-    "date": "2026.07.30",
-    "date_event": "30日实时战况 · 决战冲刺",
+    "date": "2026.08.12",
+    "date_event": "12日实时战况 · 决战冲刺",
     "slogan_top": "一鼓作气",
     "slogan_bottom": "寸土必争",
     "list": [
@@ -143,9 +143,17 @@
   },
   "history": [
     {
-      "date": "2026.07.30",
-      "label": "7月累计",
-      "slogan_top": "截至 30日",
+      "date": "2026.08.12",
+      "label": "8月累计",
+      "slogan_top": "12日决战 · 8月新战",
+      "slogan_bottom": "本月总数据 · 50% 完成率为分水岭",
+      "red_list": [],
+      "black_list": []
+    },
+    {
+      "date": "2026.07.31",
+      "label": "7月最终",
+      "slogan_top": "截至 12日",
       "slogan_bottom": "本月总数据 · 50% 完成率为分水岭",
       "red_list": [
         {
