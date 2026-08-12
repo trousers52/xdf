@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历管理 · 中台</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
+    --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+    --text: #1e293b; --text-light: #64748b; --text-lighter: #94a3b8;
+    --card: rgba(255, 255, 255, 0.85); --border: rgba(226, 232, 240, 0.8);
+    --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.12);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+    min-height: 100vh; padding: 24px 16px; color: var(--text); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { display: flex; justify-content: space-between; align-items: center;
+    background: var(--card); backdrop-filter: blur(20px); padding: 20px 24px;
+    border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5); flex-wrap: wrap; gap: 12px;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header h1 .icon { background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav a { padding: 8px 14px; border-radius: 10px; color: var(--text-light);
+    text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;
+    background: #f1f5f9; }
+  .nav a:hover { background: var(--primary); color: #fff; }
+  .nav a.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+  /* 统计 */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin-bottom: 20px; }
+  .stat { background: var(--card); backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.5); }
+  .stat .label { font-size: 12px; color: var(--text-light); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .stat .num { font-size: 28px; font-weight: 700; color: var(--text);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat .sub { font-size: 12px; color: var(--text-lighter); margin-top: 4px; }
+  /* 筛选 */
+  .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .filters input, .filters select { padding: 9px 14px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 13px; background: #fff; min-width: 140px; }
+  .filters input:focus, .filters select:focus { outline: none; border-color: var(--primary); }
+  .btn { padding: 9px 18px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+  .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-warning { background: var(--warning); color: #fff; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  /* 列表 */
+  .list { display: grid; gap: 14px; }
+  .resume-card { background: var(--card); backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg); padding: 20px 22px; box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.5); transition: all 0.2s; }
+  .resume-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .rc-head { display: flex; justify-content: space-between; align-items: start;
+    margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .rc-name { font-size: 17px; font-weight: 700; color: var(--text); }
+  .rc-name .pos { color: var(--primary); font-size: 13px; margin-left: 8px; font-weight: 500; }
+  .rc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .tag-pending { background: #fef3c7; color: #92400e; }
+  .tag-pass { background: #d1fae5; color: #065f46; }
+  .tag-fail { background: #fee2e2; color: #991b1b; }
+  .tag-pooled { background: #ddd6fe; color: #5b21b6; }
+  .rc-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 6px 18px; font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+  .rc-info .item { display: flex; gap: 6px; }
+  .rc-info .item .k { color: var(--text-lighter); min-width: 60px; }
+  .rc-info .item .v { color: var(--text); font-weight: 500; }
+  .rc-meta { font-size: 12px; color: var(--text-lighter); margin-top: 6px;
+    padding-top: 10px; border-top: 1px solid var(--border);
+    display: flex; gap: 14px; flex-wrap: wrap; }
+  .rc-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  /* 详情弹窗 */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+  .modal.show { display: flex; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-content { background: #fff; border-radius: var(--radius-lg);
+    max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow-lg); }
+  .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(135deg, #f0f3ff 0%, #e0e7ff 100%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .modal-head h2 { font-size: 18px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light); }
+  .modal-body { padding: 24px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h3 { font-size: 14px; font-weight: 700; color: var(--primary);
+    margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid #eef2ff; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13px; }
+  .detail-grid .item { display: flex; gap: 8px; }
+  .detail-grid .k { color: var(--text-lighter); min-width: 80px; }
+  .detail-grid .v { color: var(--text); }
+  .detail-block { background: #f8fafc; padding: 10px 14px; border-radius: 8px;
+    margin-bottom: 8px; font-size: 13px; }
+  .detail-block .head { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .detail-block .sub { color: var(--text-light); font-size: 12px; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-lighter); }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  /* Toast */
+  .toast { position: fixed; top: 24px; left: 50%; z-index: 200;
+    background: var(--success); color: #fff; padding: 14px 24px; border-radius: 99px;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4); font-size: 14px; font-weight: 500;
+    transform: translateX(-50%) translateY(-200%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s; opacity: 0; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.error { background: var(--danger); }
+  /* 登录 */
+  .auth { max-width: 380px; margin: 80px auto; background: var(--card);
+    backdrop-filter: blur(20px); padding: 36px; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg); text-align: center; border: 1px solid rgba(255, 255, 255, 0.5); }
+  .auth h2 { font-size: 20px; margin-bottom: 18px; }
+  .auth input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 14px; margin-bottom: 12px; }
+  .auth input:focus { outline: none; border-color: var(--primary); }
+  .auth button { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  @media (max-width: 600px) { body { padding: 12px; } .header { padding: 16px; } .header h1 { font-size: 18px; } .stat .num { font-size: 22px; } .detail-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- 鉴权 -->
+  <div id="authPage" class="auth">
+    <h2>🔐 简历管理登录</h2>
+    <input type="password" id="authToken" placeholder="请输入 HR 令牌" />
+    <button onclick="login()">登 录</button>
+    <p style="font-size:12px;color:#94a3b8;margin-top:14px">输入 HR 通行令牌进入</p>
+  </div>
+
+  <!-- 主内容 -->
+  <div id="mainPage" style="display:none">
+    <div class="header">
+      <h1><span class="icon">📋</span> 简历管理</h1>
+      <div class="nav">
+        <a href="index.html">📝 填写日报</a>
+        <a href="report-summary.html">📊 汇总</a>
+        <a href="talent.html">👥 人才库</a>
+        <a href="resume.html" target="_blank">📮 投递页</a>
+        <a href="resume-admin.html" class="active">📋 简历</a>
+      </div>
+    </div>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="label">总简历</div><div class="num" id="statTotal">-</div><div class="sub">所有投递</div></div>
+      <div class="stat"><div class="label">待审核</div><div class="num" id="statPending" style="background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">需尽快处理</div></div>
+      <div class="stat"><div class="label">已通过</div><div class="num" id="statPass" style="background:linear-gradient(135deg,#10b981,#059669);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">面试邀请</div></div>
+      <div class="stat"><div class="label">已入库</div><div class="num" id="statPooled" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">进入人才库</div></div>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="kw" placeholder="🔍 搜索姓名/手机/邮箱/身份证" style="flex:1;min-width:200px" />
+      <select id="filterStatus"><option value="">全部状态</option><option>待审核</option><option>通过</option><option>不通过</option><option>已入库</option></select>
+      <select id="filterPos"><option value="">全部岗位</option>
+        <option>销售</option><option>主播</option><option>短视频运营</option><option>短视频拍摄/剪辑</option>
+        <option>投流手</option><option>美工/设计</option><option>业务中台</option><option>数据中台</option><option>人事</option>
+      </select>
+      <button class="btn btn-primary" onclick="loadList()">查询</button>
+      <button class="btn btn-secondary" onclick="copyLink()">📋 投递链接</button>
+    </div>
+
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal" id="modal" onclick="if(event.target==this)closeModal()">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2 id="modalTitle">简历详情</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = 'https://universe-fall-return-hosts.trycloudflare.com';
+const AUTH_KEY = 'resume_admin_token';
+let allData = [];
+let toastTimer = null;
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  if (toastTimer) clearTimeout(toastTimer);
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.textContent = msg;
+  void t.offsetWidth;
+  requestAnimationFrame(() => t.classList.add('show'));
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function login() {
+  const tk = document.getElementById('authToken').value.trim();
+  if (!tk) return showToast('请输入令牌', true);
+  localStorage.setItem(AUTH_KEY, tk);
+  document.getElementById('authPage').style.display = 'none';
+  document.getElementById('mainPage').style.display = 'block';
+  loadList();
+}
+
+function getToken() { return localStorage.getItem(AUTH_KEY) || ''; }
+
+async function api(path, opts = {}) {
+  opts.headers = opts.headers || {};
+  opts.headers['Authorization'] = 'Bearer ' + getToken();
+  if (opts.body && typeof opts.body === 'object') {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  const resp = await fetch(API_BASE + path, opts);
+  if (resp.status === 403) { showToast('令牌无效', true); localStorage.removeItem(AUTH_KEY); document.getElementById('mainPage').style.display='none'; document.getElementById('authPage').style.display='block'; throw new Error('403'); }
+  return await resp.json();
+}
+
+async function loadList() {
+  const kw = document.getElementById('kw').value.trim();
+  const status = document.getElementById('filterStatus').value;
+  const pos = document.getElementById('filterPos').value;
+  const params = new URLSearchParams();
+  if (kw) params.set('keyword', kw);
+  if (status) params.set('status', status);
+  if (pos) params.set('position', pos);
+  try {
+    const r = await api('/api/resume?' + params);
+    if (r.success) {
+      allData = r.list || [];
+      renderList();
+      renderStats();
+    }
+  } catch (e) { console.error(e); }
+}
+
+function renderStats() {
+  const total = allData.length;
+  const pending = allData.filter(x => x.status === '待审核').length;
+  const pass = allData.filter(x => x.status === '通过').length;
+  const pooled = allData.filter(x => x.status === '已入库').length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statPass').textContent = pass;
+  document.getElementById('statPooled').textContent = pooled;
+}
+
+function statusClass(s) {
+  return { '待审核': 'tag-pending', '通过': 'tag-pass', '不通过': 'tag-fail', '已入库': 'tag-pooled' }[s] || 'tag-pending';
+}
+
+function renderList() {
+  const listEl = document.getElementById('list');
+  if (!allData.length) {
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>暂无简历记录</div>';
+    return;
+  }
+  listEl.innerHTML = allData.map(r => {
+    const edu = safeJSON(r.education_json, []);
+    const work = safeJSON(r.work_json, []);
+    const lastEdu = edu[0] ? `${edu[0].school || ''} · ${edu[0].major || ''} ${edu[0].degree || ''}` : '';
+    const lastWork = work[0] ? `${work[0].company || ''} · ${work[0].position || ''}` : '';
+    return `<div class="resume-card">
+      <div class="rc-head">
+        <div class="rc-name">${escape(r.name)}<span class="pos">${escape(r.apply_position || '')}</span></div>
+        <div class="rc-tags"><span class="tag ${statusClass(r.status)}">${r.status || '待审核'}</span></div>
+      </div>
+      <div class="rc-info">
+        <div class="item"><span class="k">📱 手机</span><span class="v">${escape(r.phone || '-')}</span></div>
+        <div class="item"><span class="k">📧 邮箱</span><span class="v">${escape(r.email || '-')}</span></div>
+        <div class="item"><span class="k">🚻 性别</span><span class="v">${escape(r.gender || '-')}</span></div>
+        <div class="item"><span class="k">🎂 出生</span><span class="v">${escape(r.birth_date || '-')}</span></div>
+        ${lastEdu ? `<div class="item"><span class="k">🎓 学历</span><span class="v">${escape(lastEdu)}</span></div>` : ''}
+        ${lastWork ? `<div class="item"><span class="k">💼 经历</span><span class="v">${escape(lastWork)}</span></div>` : ''}
+        ${r.apply_channel ? `<div class="item"><span class="k">📢 渠道</span><span class="v">${escape(r.apply_channel)}${r.referrer ? ' / 推荐人: '+escape(r.referrer) : ''}</span></div>` : ''}
+      </div>
+      <div class="rc-meta">
+        <span>🕐 投递时间：${r.created_at || '-'}</span>
+        ${r.ip ? `<span>🌐 IP：${r.ip}</span>` : ''}
+      </div>
+      <div class="rc-actions">
+        <button class="btn btn-sm btn-secondary" onclick="showDetail(${r.id})">👁 查看详情</button>
+        ${r.status === '待审核' ? `<button class="btn btn-sm btn-success" onclick="review(${r.id},'通过')">✓ 通过</button><button class="btn btn-sm btn-danger" onclick="review(${r.id},'不通过')">✗ 不通过</button>` : ''}
+        ${r.status === '通过' ? `<button class="btn btn-sm btn-warning" onclick="review(${r.id},'已入库')">📥 入人才库</button>` : ''}
+        ${r.status === '已入库' ? `<span class="tag tag-pooled" style="align-self:center">已自动入库 talent</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function review(id, status) {
+  if (!confirm(`确认将状态改为「${status}」？`)) return;
+  try {
+    const r = await api('/api/resume/' + id + '/review', { method: 'PUT', body: { status } });
+    if (r.success) {
+      showToast(status === '已入库' ? '已入库到人才库！' : '已更新');
+      loadList();
+    } else showToast(r.error || '操作失败', true);
+  } catch (e) { showToast('网络错误', true); }
+}
+
+function showDetail(id) {
+  const r = allData.find(x => x.id === id);
+  if (!r) return;
+  const edu = safeJSON(r.education_json, []);
+  const work = safeJSON(r.work_json, []);
+  const fam = safeJSON(r.family_json, []);
+  const fields = [
+    ['姓名', r.name], ['姓名拼音', r.name_pinyin], ['性别', r.gender], ['出生日期', r.birth_date],
+    ['婚姻状况', r.marital_status], ['子女状况', r.children], ['民族', r.nation], ['籍贯', r.native_place],
+    ['身份证号', r.id_card], ['政治面貌', r.political_status], ['QQ', r.qq],
+    ['手机', r.phone], ['邮箱', r.email], ['英语水平', r.english_level], ['血型', r.blood_type],
+    ['驾照', r.driver_license], ['现居住地', r.current_address],
+    ['户口类别', r.household_type], ['户口所在地', r.household_address], ['档案所在地', r.archive_location],
+    ['竞业禁止', r.non_compete], ['与原单位解除', r.original_company_released],
+    ['社保', r.has_social_security], ['社保地', r.social_security_location],
+    ['亲友在本公司', r.has_relatives], ['亲友姓名', r.relative_name],
+    ['紧急联系人', r.emergency_contact], ['紧急电话', r.emergency_phone],
+  ];
+  document.getElementById('modalTitle').textContent = `${r.name} · ${r.apply_position || ''}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-section">
+      <h3>📌 基本信息</h3>
+      <div class="detail-grid">${fields.filter(f => f[1]).map(f => `<div class="item"><span class="k">${f[0]}</span><span class="v">${escape(f[1])}</span></div>`).join('') || '<div style="color:#94a3b8">无</div>'}</div>
+    </div>
+    <div class="detail-section">
+      <h3>💼 应聘信息</h3>
+      <div class="detail-grid">
+        <div class="item"><span class="k">应聘岗位</span><span class="v">${escape(r.apply_position || '-')}</span></div>
+        <div class="item"><span class="k">渠道</span><span class="v">${escape(r.apply_channel || '-')}${r.channel_other ? ' / ' + escape(r.channel_other) : ''}</span></div>
+        <div class="item"><span class="k">推荐人</span><span class="v">${escape(r.referrer || '-')}</span></div>
+        <div class="item"><span class="k">猎头</span><span class="v">${escape(r.headhunter || '-')}</span></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h3>🎓 教育背景 (${edu.length})</h3>
+      ${edu.length ? edu.map(e => `<div class="detail-block"><div class="head">${escape(e.school || '?')} · ${escape(e.major || '')} · ${escape(e.degree || '')}${e.honor ? ' / ' + escape(e.honor) : ''}</div><div class="sub">${escape(e.start || '?')} ~ ${escape(e.end || '?')}${e.type ? ' · ' + escape(e.type) : ''}</div></div>`).join('') : '<div style="color:#94a3b8">无</div>'}
+    </div>
+    <div class="detail-section">
+      <h3>💼 工作经历 (${work.length})</h3>
+      ${work.length ? work.map(w => `<div class="detail-block"><div class="head">${escape(w.company || '?')} · ${escape(w.position || '')}</div><div class="sub">${escape(w.start || '?')} ~ ${escape(w.end || '?')}${w.leave_reason ? ' · 离职原因: ' + escape(w.leave_reason) : ''}</div></div>`).join('') : '<div style="color:#94a3b8">无</div>'}
+    </div>
+    <div class="detail-section">
+      <h3>✨ 特长 / 获奖</h3>
+      <div class="detail-block"><div class="head">职称</div><div class="sub">${escape(r.title_time || '?')} · ${escape(r.title_name || '-')}</div></div>
+      <div class="detail-block"><div class="head">职业资格</div><div class="sub">${escape(r.cert_time || '?')} · ${escape(r.cert_name || '-')}</div></div>
+      <div class="detail-block"><div class="head">业绩/获奖</div><div class="sub">${escape(r.achievements || '无')}</div></div>
+      <div class="detail-block"><div class="head">个人特长</div><div class="sub">${escape(r.specialty || '无')}</div></div>
+      <div class="detail-block"><div class="head">兴趣爱好</div><div class="sub">${escape(r.hobby || '无')}</div></div>
+    </div>
+    <div class="detail-section">
+      <h3>👪 家庭成员 (${fam.length})</h3>
+      ${fam.length ? fam.map(f => `<div class="detail-block"><div class="head">${escape(f.name || '?')} · ${escape(f.relation || '')}</div><div class="sub">${escape(f.company || '-')} · ${escape(f.position || '-')} · ${escape(f.phone || '')}</div></div>`).join('') : '<div style="color:#94a3b8">无</div>'}
+    </div>
+    <div class="detail-section" style="font-size:12px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:12px;">
+      投递时间：${r.created_at || '-'} · IP：${r.ip || '-'} · UA：${(r.user_agent || '').slice(0, 60)}
+    </div>
+  `;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+function safeJSON(s, d) { try { return JSON.parse(s) || d; } catch (e) { return d; } }
+function escape(s) { return (s || '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function copyLink() {
+  const link = location.origin + '/xdf/hr-report/resume.html';
+  navigator.clipboard.writeText(link).then(() => showToast('✅ 链接已复制：' + link), () => showToast('复制失败', true));
+}
+
+// 启动
+if (getToken()) { document.getElementById('authPage').style.display = 'none'; document.getElementById('mainPage').style.display = 'block'; loadList(); }
+// 回车登录
+document.getElementById('authToken').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+// 搜索
+document.getElementById('kw').addEventListener('keydown', e => { if (e.key === 'Enter') loadList(); });
+</script>
+</body>
+</html>
