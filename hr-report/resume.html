@@ -100,34 +100,25 @@
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
   }
-  /* 心电图线 */
+  /* 心电图线（中央跳动） */
   .ecg-line {
     position: absolute;
-    left: 0; right: 0; top: 64%;
-    height: 90px;
-    pointer-events: none; z-index: 0;
+    left: 50%; top: 46%;
+    transform: translate(-50%, -50%);
+    width: 320px; max-width: 80%;
+    height: 80px;
+    pointer-events: none; z-index: 1;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 59, 59, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 0 60px rgba(255, 59, 59, 0.15), inset 0 0 30px rgba(255, 59, 59, 0.08);
+    backdrop-filter: blur(4px);
+    padding: 8px;
     overflow: hidden;
   }
-  .ecg-line svg {
-    width: 200%; height: 100%;
-    display: block;
-    animation: ecg-move 2.2s linear infinite;
-  }
-  @keyframes ecg-move {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-  .ecg-pulse {
-    animation: ecg-pulse 2.2s linear infinite;
-  }
-  @keyframes ecg-pulse {
-    0%   { offset-distance: 0%;   opacity: 0; }
-    4%   { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { offset-distance: 100%; opacity: 0; }
-  }
+  .ecg-line svg { width: 100%; height: 100%; display: block; }
   @media (max-width: 600px) {
-    .ecg-line { top: 60%; height: 60px; }
+    .ecg-line { width: 240px; height: 60px; top: 48%; }
   }
   .hero-content {
     max-width: 1200px; margin: 0 auto; width: 100%;
@@ -482,23 +473,33 @@
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="ecg-line">
-    <svg viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="ecgGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
-          <stop offset="15%" stop-color="rgba(255,255,255,0.55)"/>
-          <stop offset="50%" stop-color="rgba(255,255,255,0.95)"/>
-          <stop offset="85%" stop-color="rgba(255,255,255,0.55)"/>
-          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-        </linearGradient>
-      </defs>
-      <!-- 两段相同的 ECG 波形，无缝循环 -->
-      <g fill="none" stroke="url(#ecgGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M0 40 L60 40 L70 36 L80 40 L100 40 L108 46 L116 8 L122 70 L128 24 L134 40 L200 40 L220 36 L230 40 L250 40 L258 46 L266 8 L272 70 L278 24 L284 40 L400 40" />
-        <path d="M400 40 L460 40 L470 36 L480 40 L500 40 L508 46 L516 8 L522 70 L528 24 L534 40 L600 40 L620 36 L630 40 L650 40 L658 46 L666 8 L672 70 L678 24 L684 40 L800 40" />
-      </g>
-      <!-- 端点脉冲光点 -->
-      <circle r="3" fill="#fff" class="ecg-pulse" />
+    <svg viewBox="0 0 320 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <!-- 暗色背景网格（屏幕感） -->
+      <rect x="0" y="0" width="320" height="80" rx="8" fill="rgba(0,0,0,0.18)"/>
+      <!-- ECG 波形：基线 → P → QRS → T → 基线 -->
+      <path id="ecgPath" d="M0 40 L60 40 L72 32 L84 40 L100 40 L108 48 L116 6 L122 74 L128 22 L134 40 L320 40"
+            stroke="#ff3b3b" stroke-width="2.5" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"
+            pathLength="100"
+            stroke-dasharray="100 100"
+            stroke-dashoffset="100">
+        <animate attributeName="stroke-dashoffset"
+                 from="100" to="-100"
+                 dur="1.6s" repeatCount="indefinite"/>
+      </path>
+      <!-- 扫描头（亮点跟着波形走） -->
+      <circle r="4" fill="#ff3b3b" opacity="0.95">
+        <animateMotion dur="1.6s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#ecgPath"/>
+        </animateMotion>
+      </circle>
+      <circle r="9" fill="#ff3b3b" opacity="0.25">
+        <animateMotion dur="1.6s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#ecgPath"/>
+        </animateMotion>
+      </circle>
+      <!-- 屏幕扫描线 -->
+      <text x="8" y="14" fill="rgba(255,255,255,0.5)" font-size="9" font-family="monospace">♥ 芯动未来 EKG</text>
     </svg>
   </div>
   <div class="hero-content">
