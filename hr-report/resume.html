@@ -100,9 +100,38 @@
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
   }
+  /* 心电图线 */
+  .ecg-line {
+    position: absolute;
+    left: 0; right: 0; top: 64%;
+    height: 90px;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .ecg-line svg {
+    width: 200%; height: 100%;
+    display: block;
+    animation: ecg-move 2.2s linear infinite;
+  }
+  @keyframes ecg-move {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .ecg-pulse {
+    animation: ecg-pulse 2.2s linear infinite;
+  }
+  @keyframes ecg-pulse {
+    0%   { offset-distance: 0%;   opacity: 0; }
+    4%   { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+  @media (max-width: 600px) {
+    .ecg-line { top: 60%; height: 60px; }
+  }
   .hero-content {
     max-width: 1200px; margin: 0 auto; width: 100%;
-    position: relative; z-index: 1;
+    position: relative; z-index: 2;
     text-align: center; color: #fff;
   }
   .hero-badge {
@@ -452,6 +481,26 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-grid"></div>
+  <div class="ecg-line">
+    <svg viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ecgGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+          <stop offset="15%" stop-color="rgba(255,255,255,0.55)"/>
+          <stop offset="50%" stop-color="rgba(255,255,255,0.95)"/>
+          <stop offset="85%" stop-color="rgba(255,255,255,0.55)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+      </defs>
+      <!-- 两段相同的 ECG 波形，无缝循环 -->
+      <g fill="none" stroke="url(#ecgGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M0 40 L60 40 L70 36 L80 40 L100 40 L108 46 L116 8 L122 70 L128 24 L134 40 L200 40 L220 36 L230 40 L250 40 L258 46 L266 8 L272 70 L278 24 L284 40 L400 40" />
+        <path d="M400 40 L460 40 L470 36 L480 40 L500 40 L508 46 L516 8 L522 70 L528 24 L534 40 L600 40 L620 36 L630 40 L650 40 L658 46 L666 8 L672 70 L678 24 L684 40 L800 40" />
+      </g>
+      <!-- 端点脉冲光点 -->
+      <circle r="3" fill="#fff" class="ecg-pulse" />
+    </svg>
+  </div>
   <div class="hero-content">
     <div class="hero-badge">
       <span class="dot"></span>
