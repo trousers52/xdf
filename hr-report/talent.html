@@ -5,659 +5,448 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>人才库 · 中台部门</title>
 <style>
-  /* ========== 重置 & 基础 ========== */
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --accent: #f59e0b;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --text: #1e293b;
-    --text-light: #64748b;
-    --text-lighter: #94a3b8;
-    --bg: #f8fafc;
-    --card: rgba(255, 255, 255, 0.85);
-    --border: rgba(226, 232, 240, 0.8);
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-    --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.12);
-    --radius-sm: 8px;
-    --radius: 12px;
-    --radius-lg: 20px;
-    --radius-xl: 28px;
+    --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
+    --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+    --text: #0f172a; --text-light: #64748b; --text-lighter: #94a3b8;
+    --card: rgba(255, 255, 255, 0.85); --card-solid: #ffffff;
+    --border: rgba(226, 232, 240, 0.7);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+    --shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.15);
+    --radius: 12px; --radius-lg: 20px; --radius-xl: 28px;
+    --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   }
   html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    padding: 24px 20px;
-    color: var(--text);
-    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+    min-height: 100vh; padding: 20px 16px; color: var(--text); line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    position: relative;
-    overflow-x: hidden;
   }
-  body::before, body::after {
-    content: ''; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-    filter: blur(80px); opacity: 0.4;
-  }
-  body::before { width: 500px; height: 500px; background: #fbbf24; top: -150px; right: -150px; }
-  body::after { width: 400px; height: 400px; background: #34d399; bottom: -100px; left: -100px; }
-
-  /* ========== 容器 ========== */
-  .container {
-    max-width: 780px; margin: 0 auto;
-    background: var(--card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    position: relative; z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    animation: fadeIn 0.5s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .container { max-width: 1200px; margin: 0 auto; }
 
   /* ========== 头部 ========== */
   .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
-    padding: 40px 32px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    background: var(--gradient);
+    color: #fff; padding: 32px 32px 28px; border-radius: var(--radius-xl);
+    box-shadow: var(--shadow); margin-bottom: 20px; position: relative; overflow: hidden;
   }
   .header::before {
     content: ''; position: absolute; inset: 0;
     background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
-    pointer-events: none;
   }
-  .header h1 {
-    font-size: 28px; font-weight: 700; margin-bottom: 8px;
-    letter-spacing: -0.02em; position: relative;
+  .header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; position: relative; }
+  .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  .header .sub { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+  .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .header-actions a, .header-actions button {
+    padding: 8px 14px; background: rgba(255,255,255,0.15); color: #fff;
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 99px;
+    font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer;
+    transition: all 0.2s; backdrop-filter: blur(10px);
+    font-family: inherit; display: inline-flex; align-items: center; gap: 4px;
   }
-  .header p { opacity: 0.95; font-size: 14px; position: relative; }
-  .header .header-link {
-    position: absolute; top: 24px; right: 28px;
-    color: #fff; text-decoration: none; font-size: 13px; font-weight: 500;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 99px;
-    backdrop-filter: blur(8px);
+  .header-actions a:hover, .header-actions button:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
+  .header-actions .primary { background: #fff; color: var(--primary-dark); border-color: #fff; font-weight: 600; }
+  .header-actions .primary:hover { background: #f8fafc; }
+  .header-actions .admin-on { background: #10b981 !important; border-color: #10b981 !important; }
+
+  /* ========== 统计卡片 ========== */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 20px; }
+  .stat {
+    background: var(--card-solid); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 18px 20px; transition: all 0.2s;
+  }
+  .stat:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .stat .label { font-size: 12px; color: var(--text-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat .num { font-size: 28px; font-weight: 800; margin: 6px 0 2px; background: var(--gradient);
+    -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; }
+  .stat .sub { font-size: 12px; color: var(--text-lighter); }
+
+  /* ========== 工具栏 ========== */
+  .toolbar {
+    background: var(--card-solid); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 16px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  }
+  .toolbar input, .toolbar select {
+    padding: 9px 14px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 13px; background: #fff; color: var(--text);
+    font-family: inherit; transition: all 0.2s;
+  }
+  .toolbar input { flex: 1; min-width: 180px; }
+  .toolbar select { min-width: 130px; }
+  .toolbar input:focus, .toolbar select:focus { outline: none; border-color: var(--primary); }
+  .toolbar .refresh {
+    padding: 9px 16px; background: #f1f5f9; color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    font-size: 13px; cursor: pointer; font-weight: 500;
+    font-family: inherit; display: inline-flex; align-items: center; gap: 4px;
     transition: all 0.2s;
   }
-  .header .header-link:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-1px); }
+  .toolbar .refresh:hover { background: #e2e8f0; }
+  .toolbar .refresh.loading svg { animation: spin 1s linear infinite; }
+  @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
-  /* ========== 表单主体 ========== */
-  .form-body { padding: 32px; }
-  .field { margin-bottom: 18px; }
-  .field label {
-    display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;
-    letter-spacing: 0.01em;
+  /* ========== 列表 ========== */
+  .list { display: grid; gap: 12px; }
+  .item {
+    background: var(--card-solid); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 18px 20px;
+    display: flex; gap: 16px; align-items: center;
+    transition: all 0.2s; position: relative;
   }
-  .field label .required { color: var(--danger); margin-left: 2px; }
-  .field label .hint { font-weight: 400; color: var(--text-lighter); font-size: 12px; margin-left: 6px; }
-  .field input,
-  .field textarea,
-  .field select {
-    width: 100%; padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px; font-family: inherit; color: var(--text);
-    background: #fff;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-appearance: none; appearance: none;
+  .item:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary-light); }
+  .item.blacklist { background: #fef2f2; border-color: #fecaca; }
+  .item.blacklist:hover { border-color: #f87171; }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: #fff;
+    background: var(--gradient);
   }
-  .field select {
+  .item.blacklist .avatar { background: linear-gradient(135deg, #6b7280 0%, #374151 100%); }
+  .item .info { flex: 1; min-width: 0; }
+  .item .name { font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .item .name .strike { text-decoration: line-through; color: #9ca3af; }
+  .item .meta { font-size: 13px; color: var(--text-light); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .item .meta span { display: inline-flex; align-items: center; gap: 3px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .tag { padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .tag.position { background: #eef2ff; color: var(--primary-dark); }
+  .tag.source { background: #f1f5f9; color: var(--text-light); }
+  .tag.A { background: #fef3c7; color: #92400e; }
+  .tag.B { background: #dbeafe; color: #1e40af; }
+  .tag.C { background: #e5e7eb; color: #374151; }
+  .tag.在库 { background: #d1fae5; color: #065f46; }
+  .tag.面试 { background: #dbeafe; color: #1e40af; }
+  .tag.已联系 { background: #f3e8ff; color: #6b21a8; }
+  .tag.黑名单 { background: #fee2e2; color: #991b1b; }
+  .actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .actions button {
+    padding: 7px 12px; border: none; border-radius: 8px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .actions .edit { background: #eef2ff; color: var(--primary-dark); }
+  .actions .edit:hover { background: var(--primary); color: #fff; }
+  .actions .danger { background: #fee2e2; color: #b91c1c; }
+  .actions .danger:hover { background: var(--danger); color: #fff; }
+  .actions .success { background: #d1fae5; color: #065f46; }
+  .actions .success:hover { background: var(--success); color: #fff; }
+  .readonly { font-size: 12px; color: var(--text-lighter); padding: 7px 0; }
+
+  /* ========== 弹窗 ========== */
+  .modal-bg {
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px); z-index: 100; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-bg.show { display: flex; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff; border-radius: var(--radius-lg);
+    max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; }
+  .modal-head h2 { font-size: 18px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light); padding: 0; }
+  .modal-body { padding: 24px; }
+  .form-row { margin-bottom: 14px; }
+  .form-row label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .form-row input, .form-row select, .form-row textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text);
+    background: #fff; transition: all 0.2s;
+  }
+  .form-row textarea { resize: vertical; min-height: 70px; }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    outline: none; border-color: var(--primary);
+  }
+  .form-row select {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
     background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
     padding-right: 36px;
   }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    outline: none; border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-    transform: translateY(-1px);
-  }
-  .field input:hover:not(:focus), .field textarea:hover:not(:focus), .field select:hover:not(:focus) {
-    border-color: var(--primary-light);
-  }
-  .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-foot { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-primary { padding: 10px 20px; background: var(--gradient); color: #fff;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: all 0.2s; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+  .btn-secondary { padding: 10px 20px; background: #f1f5f9; color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-secondary:hover { background: #e2e8f0; }
 
-  /* ========== 按钮 ========== */
-  .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .btn {
-    flex: 1; min-width: 140px; padding: 14px 20px;
-    border: none; border-radius: var(--radius);
-    font-size: 14px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: inherit; letter-spacing: 0.02em;
-    position: relative; overflow: hidden;
+  /* ========== 空 / 加载 / 错误 ========== */
+  .empty, .loading, .error {
+    background: var(--card-solid); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 50px 20px; text-align: center;
   }
-  .btn::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
-    opacity: 0; transition: opacity 0.2s;
-  }
-  .btn:hover::before { opacity: 1; }
-  .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
-  }
-  .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3); }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-  .btn-secondary {
-    background: #f1f5f9; color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { background: #e2e8f0; transform: translateY(-1px); }
-  .btn-secondary:active { transform: translateY(0); }
-
-  /* ========== 预览 ========== */
-  .preview {
-    margin-top: 20px; padding: 20px 22px;
-    background: #f8fafc; border: 1px solid var(--border);
-    border-radius: var(--radius);
-    white-space: pre-wrap;
-    font-family: "SF Mono", Consolas, "Monaco", monospace;
-    font-size: 12.5px; line-height: 1.7; color: var(--text);
-    display: none; max-height: 500px; overflow-y: auto;
-    border-left: 4px solid var(--primary);
-  }
-  .preview.show { display: block; animation: slideDown 0.3s ease; }
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .empty .icon, .loading .icon, .error .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.6; }
+  .empty .title, .loading .title, .error .title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .empty .desc, .loading .desc, .error .desc { font-size: 13px; color: var(--text-light); margin-bottom: 16px; }
+  .loading .icon { animation: pulse 1.5s ease-in-out infinite; }
+  .error .icon { opacity: 1; }
+  .error button { padding: 9px 18px; background: var(--danger); color: #fff;
+    border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%; animation: skeleton 1.5s infinite;
+    border-radius: 6px; height: 14px; }
+  @keyframes skeleton { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .skeleton-item { background: var(--card-solid); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 18px 20px; display: flex; gap: 16px; }
+  .skeleton-item .sk-avatar { width: 48px; height: 48px; border-radius: 50%; }
+  .skeleton-item .sk-info { flex: 1; }
+  .skeleton-item .sk-line { margin-bottom: 8px; }
 
   /* ========== Toast ========== */
   .toast {
-    position: fixed; top: 24px; left: 50%; z-index: 1000;
-    background: var(--success); color: #fff;
-    padding: 14px 24px; border-radius: 99px;
-    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
-    font-size: 14px; font-weight: 500;
-    transform: translateX(-50%) translateY(-200%);
+    position: fixed; top: 24px; left: 50%; z-index: 200;
+    background: var(--success); color: #fff; padding: 14px 24px; border-radius: 99px;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4); font-size: 14px; font-weight: 500;
+    transform: translateX(-50%) translateY(-200%); opacity: 0;
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
-    opacity: 0;
-    max-width: 90vw;
-    backdrop-filter: blur(8px);
   }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-  .toast.hiding { transform: translateX(-50%) translateY(-50px); opacity: 0; }
-  .toast.error { background: var(--danger); box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4); }
-
-  /* ========== 底部 ========== */
-  .footer {
-    text-align: center; padding: 20px;
-    font-size: 12px; color: var(--text-light);
-    background: rgba(248, 250, 252, 0.5);
-    border-top: 1px solid var(--border);
+  .toast.error { background: var(--danger); }
+  .badge-pulse {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #10b981; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse-ring 1.5s infinite;
   }
-  .footer strong { color: var(--primary); font-weight: 600; }
-
-  /* ========== 信息条 ========== */
-  .info-banner {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 1px solid #fcd34d; color: #78350f;
-    padding: 12px 16px; border-radius: var(--radius);
-    font-size: 13px; line-height: 1.6; margin-bottom: 24px;
-  }
-  .info-banner b { color: #92400e; }
-
-  /* ========== 加载动画 ========== */
-  .loading {
-    display: inline-block; width: 14px; height: 14px;
-    border: 2px solid #fff; border-top-color: transparent;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-    margin-right: 6px; vertical-align: middle;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ========== 分组卡片 ========== */
-  .group {
-    background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.5) 100%);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px 22px; margin-bottom: 18px;
-    transition: all 0.2s;
-  }
-  .group:hover { border-color: var(--primary-light); }
-  .group-title {
-    font-size: 15px; font-weight: 700; color: var(--primary);
-    margin-bottom: 16px; padding-bottom: 10px;
-    border-bottom: 1.5px dashed rgba(99, 102, 241, 0.2);
-    letter-spacing: 0.01em;
-  }
-  .group-title .icon { font-size: 18px; margin-right: 4px; }
-  .group .field { margin-bottom: 14px; }
-  .group .field:last-child { margin-bottom: 0; }
-
-  /* ========== 比例/比率显示 ========== */
-  .ratio-box {
-    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-    border: 1px solid #c7d2fe; border-radius: var(--radius);
-    padding: 12px 16px; margin-top: 10px;
-    font-size: 13px; color: #4338ca; font-weight: 600;
-  }
-  .ratio-box .num { color: var(--primary); font-size: 15px; }
-  .ratio-box.empty { background: #f8fafc; border-color: var(--border); color: var(--text-lighter); font-weight: 400; }
-
-  /* ========== 进度条 ========== */
-  .progress-box {
-    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-    border: 1.5px solid #fdba74; border-radius: var(--radius-lg);
-    padding: 16px 18px; margin-top: 4px;
-  }
-  .progress-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #9a3412; margin-bottom: 10px; }
-  .progress-info b { color: #c2410c; font-size: 16px; }
-  .progress-pct { font-weight: 700; color: #c2410c; font-size: 15px; }
-  .progress-bar { height: 16px; background: #fed7aa; border-radius: 99px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
-    border-radius: 99px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; overflow: hidden;
-    box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
-  }
-  .progress-fill::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-    animation: shimmer 2s infinite;
-  }
-  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-  .progress-fill.over {
-    background: linear-gradient(90deg, #34d399 0%, #10b981 50%, #059669 100%);
-    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
-  }
-  .progress-meta { font-size: 12px; color: #9a3412; margin-top: 8px; display: flex; justify-content: space-between; opacity: 0.85; }
-  .progress-meta button {
-    background: transparent; border: 1px solid #fdba74; color: #c2410c;
-    padding: 4px 12px; border-radius: 99px; font-size: 11px;
-    cursor: pointer; font-family: inherit; transition: all 0.2s;
-  }
-  .progress-meta button:hover { background: #fff; transform: scale(1.05); }
-
-  /* ========== 工作饱和度 ========== */
-  .saturation-display {
-    display: flex; align-items: center; gap: 10px; padding: 14px 18px;
-    border-radius: var(--radius); font-size: 15px; font-weight: 600;
-    background: #f8fafc; border: 1.5px solid var(--border); color: var(--text-lighter);
-    transition: all 0.3s;
-  }
-  .saturation-display .sat-icon { font-size: 22px; }
-  .saturation-display[data-level="full"] {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    border-color: #34d399; color: #065f46;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-  }
-  .saturation-display[data-level="mid"] {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-color: #fbbf24; color: #92400e;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-  }
-  .saturation-display[data-level="low"] {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    border-color: #f87171; color: #991b1b;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
   }
 
-  /* ========== 截图列表 ========== */
-  .screenshot-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .screenshot-item {
-    position: relative; width: 84px; height: 84px; border-radius: var(--radius);
-    overflow: hidden; border: 1.5px solid var(--border); background: #f8fafc;
-    box-shadow: var(--shadow-sm); transition: all 0.2s;
-  }
-  .screenshot-item:hover { transform: scale(1.05); box-shadow: var(--shadow); }
-  .screenshot-item img { width: 100%; height: 100%; object-fit: cover; }
-  .screenshot-item .del {
-    position: absolute; top: 4px; right: 4px;
-    background: rgba(0, 0, 0, 0.65); color: #fff;
-    width: 22px; height: 22px; border-radius: 50%; border: none;
-    cursor: pointer; font-size: 13px; line-height: 1; font-weight: 600;
-    backdrop-filter: blur(4px); transition: all 0.2s;
-  }
-  .screenshot-item .del:hover { background: var(--danger); transform: scale(1.1); }
-  .screenshot-item .status {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(0, 0, 0, 0.6); color: #fff;
-    font-size: 10px; padding: 2px; text-align: center;
-    backdrop-filter: blur(4px);
-  }
-
-  /* ========== OCR 状态 ========== */
-  .ocr-status { font-size: 13px; color: var(--text-light); margin-top: 8px; min-height: 22px; }
-  .ocr-status.loading { color: var(--primary); }
-  .ocr-status.success { color: var(--success); }
-  .ocr-status.error { color: var(--danger); }
-  .ocr-result {
-    margin-top: 12px; padding: 14px 16px;
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border: 1.5px solid #93c5fd; border-radius: var(--radius);
-    animation: slideDown 0.3s ease;
-  }
-  .ocr-title { font-weight: 700; color: #1e40af; margin-bottom: 10px; }
-  .ocr-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .ocr-row {
-    display: flex; justify-content: space-between; align-items: center; font-size: 13px;
-    background: #fff; padding: 8px 12px; border-radius: var(--radius-sm);
-  }
-  .ocr-row .label { color: var(--text-light); }
-  .ocr-row .value { color: #1e40af; font-weight: 700; font-size: 15px; }
-  .ocr-row .value.unconfident { color: var(--warning); }
-  .ocr-row .value.zero { color: var(--text-lighter); }
-  .ocr-confirm { width: 100%; margin-top: 4px; }
-
-  /* ========== talent.html 专用 ========== */
-  /* 移动优先 */
-  .body { padding: 16px; }
-  .toolbar { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-  .toolbar input, .toolbar select {
-    padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius);
-    font-size: 14px; font-family: inherit; color: var(--text);
-    background: #fff; transition: all 0.2s;
-  }
-  .toolbar input { flex: 1; min-width: 200px; }
-  .toolbar input:focus, .toolbar select:focus {
-    outline: none; border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-  }
-  .toolbar .btn { flex: 0 0 auto; min-width: 120px; }
-  .add-form {
-    background: linear-gradient(135deg, rgba(238, 242, 255, 0.6) 0%, rgba(224, 231, 255, 0.4) 100%);
-    border: 1.5px solid #c7d2fe; border-radius: var(--radius-lg);
-    padding: 22px 24px; margin-bottom: 20px;
-    display: none; animation: slideDown 0.3s ease;
-  }
-  .add-form.show { display: block; }
-  .form-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
-  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 12px; }
-  .form-grid .full { grid-column: 1 / -1; }
-  .form-grid label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 6px; }
-  .form-grid input, .form-grid select, .form-grid textarea {
-    width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    font-size: 14px; font-family: inherit;
-    transition: all 0.2s;
-  }
-  .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
-    outline: none; border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  }
-  .form-grid textarea { min-height: 70px; resize: vertical; line-height: 1.6; }
-  .form-actions { display: flex; gap: 10px; justify-content: flex-end; }
-  /* 表格 */
-  .table-wrap {
-    background: #fff; border-radius: var(--radius-lg);
-    overflow: hidden; border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-  }
-  table { width: 100%; border-collapse: collapse; }
-  th { background: #f8fafc; padding: 14px 12px; text-align: left; font-size: 13px; color: var(--text-light); font-weight: 600; border-bottom: 1px solid var(--border); }
-  td { padding: 14px 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; transition: background 0.2s; }
-  tr:hover td { background: #f8fafc; }
-  tr:last-child td { border-bottom: none; }
-  .rating { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
-  .rating.A { background: #d1fae5; color: #065f46; }
-  .rating.B { background: #dbeafe; color: #1e40af; }
-  .rating.C { background: #fef3c7; color: #92400e; }
-  .rating.D { background: #fee2e2; color: #991b1b; }
-  .status { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; }
-  .status.在库 { background: #dbeafe; color: #1e40af; }
-  .status.已联系 { background: #fef3c7; color: #92400e; }
-  .status.已入职 { background: #d1fae5; color: #065f46; }
-  .status.已淘汰 { background: #f1f5f9; color: #64748b; }
-  .status.黑名单 { background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); color: #fff; font-weight: 600; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3); }
-  tr.blacklist-row { background: #fef2f2 !important; }
-  tr.blacklist-row:hover { background: #fee2e2 !important; }
-  tr.blacklist-row td { color: #991b1b; }
-  tr.blacklist-row td .name-strike { text-decoration: line-through; opacity: 0.7; }
-  .empty { text-align: center; padding: 60px 20px; color: var(--text-lighter); }
-  .count-badge { background: var(--primary); color: #fff; padding: 3px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; margin-left: 8px; }
-  .btn-edit { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; padding: 6px 12px; font-size: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: all 0.2s; }
-  .btn-edit:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3); }
-  .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; padding: 6px 12px; font-size: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: all 0.2s; }
-  .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3); }
-  /* auth bar */
-  .auth-bar { position: absolute; top: 24px; right: 28px; display: flex; gap: 10px; align-items: center; }
-  .auth-bar button {
-    background: rgba(255, 255, 255, 0.2); color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 16px; border-radius: 99px; cursor: pointer; font-size: 13px; font-weight: 500;
-    backdrop-filter: blur(8px); transition: all 0.2s;
-  }
-  .auth-bar button:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-1px); }
-  .auth-bar .auth-status { color: #fff; font-size: 12px; opacity: 0.95; }
-  .auth-modal-bg { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(8px); }
-  .auth-modal-bg.show { display: flex; animation: fadeIn 0.2s ease; }
-  .auth-modal { background: #fff; border-radius: var(--radius-lg); padding: 32px; width: 90%; max-width: 420px; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; }
-  .auth-modal h3 { margin-bottom: 8px; color: var(--text); font-size: 18px; }
-  .auth-modal p { color: var(--text-light); font-size: 13px; margin-bottom: 18px; }
-  .auth-modal input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 16px; margin-bottom: 14px; transition: all 0.2s; }
-  .auth-modal input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12); }
-  .auth-modal .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 0; }
-  /* 响应式 */
-  @media (max-width: 767px) {
-    .body { padding: 16px; }
-    .toolbar { flex-direction: column; }
-    .toolbar input { min-width: 0; width: 100%; }
-    .toolbar .btn { width: 100%; }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-grid .full { grid-column: 1; }
-    .header { padding: 32px 20px; }
-    .header a, .auth-bar { position: static; display: flex; justify-content: center; margin: 12px auto 0; }
-    .table-wrap { overflow-x: auto; }
-    table { min-width: 700px; }
-  }
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .container { max-width: 720px; }
-  }
-  @supports (padding: max(0px)) {
-    body { padding-top: max(24px, env(safe-area-inset-top)); padding-bottom: max(24px, env(safe-area-inset-bottom)); padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+  /* ========== 响应式 ========== */
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    .header { padding: 24px 20px; }
+    .header h1 { font-size: 22px; }
+    .header-actions a, .header-actions button { font-size: 12px; padding: 6px 12px; }
+    .stat { padding: 14px 16px; }
+    .stat .num { font-size: 22px; }
+    .item { padding: 14px 16px; gap: 12px; }
+    .avatar { width: 40px; height: 40px; font-size: 15px; }
+    .item .name { font-size: 14px; }
+    .item .meta { font-size: 12px; }
+    .actions button { font-size: 11px; padding: 5px 8px; }
+    .form-grid-2 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 <div class="container">
+  <!-- 头部 -->
   <div class="header">
-    <a href="./">← 回到日报</a>
-    <h1>🌟 人才库</h1>
-    <p>把优秀人才存到这里，长期跟踪，永久可查</p>
-    <div class="auth-bar" id="authBar">
-      <span class="auth-status" id="authStatus">🔒 只读模式</span>
-      <a href="resume-admin.html" class="header-link" style="position:static;margin-left:8px;background:rgba(255,255,255,0.15);color:#fff;padding:6px 14px;border-radius:99px;font-size:13px;text-decoration:none;font-weight:500;">📋 简历管理</a>
-      <a href="resume.html" target="_blank" class="header-link" style="position:static;margin-left:4px;background:rgba(255,255,255,0.15);color:#fff;padding:6px 14px;border-radius:99px;font-size:13px;text-decoration:none;font-weight:500;">📮 投递页</a>
-      <button onclick="showAuthModal()" id="authBtn">人事专员登录</button>
-    </div>
-  </div>
-
-  <div class="auth-modal-bg" id="authModal">
-    <div class="auth-modal">
-      <h3>🔐 人事专员验证</h3>
-      <p>请输入人事专员令牌（由管理员提供）</p>
-      <input type="password" id="authToken" placeholder="输入令牌">
-      <div class="actions">
-        <button class="btn btn-secondary" onclick="hideAuthModal()">取消</button>
-        <button class="btn btn-primary" onclick="doAuth()">验证</button>
+    <div class="header-row">
+      <div>
+        <h1>🌟 人才库</h1>
+        <div class="sub">把优秀人才存到这里，长期跟踪，永久可查</div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html">📝 填写日报</a>
+        <a href="resume-admin.html">📋 简历管理</a>
+        <a href="report-summary.html">📊 日报汇总</a>
+        <button class="primary" id="addBtn" onclick="toggleForm()">+ 添加人才</button>
+        <button id="authBtn" onclick="showAuth()">🔒 人事登录</button>
       </div>
     </div>
   </div>
 
-  <div class="body">
-    <div class="toolbar">
-      <input type="text" id="searchInput" placeholder="搜索：姓名 / 电话 / 微信 / 邮箱 / 备注">
-      <select id="statusFilter">
-        <option value="">全部状态</option>
-        <option value="在库">在库</option>
-        <option value="已联系">已联系</option>
-        <option value="已入职">已入职</option>
-        <option value="已淘汰">已淘汰</option>
-        <option value="黑名单">🚫 黑名单</option>
-      </select>
-      <select id="positionFilter">
-        <option value="">全部岗位</option>
-        <option value="销售">销售</option>
-        <option value="主播">主播</option>
-        <option value="短视频">短视频</option>
-        <option value="投流手">投流手</option>
-        <option value="美工">美工</option>
-        <option value="其他">其他</option>
-      </select>
-      <button class="btn btn-primary" id="addBtn" onclick="toggleForm()">➕ 添加人才</button>
-    </div>
+  <!-- 统计 -->
+  <div class="stats" id="stats">
+    <div class="stat"><div class="label">总人数</div><div class="num" id="statTotal">-</div><div class="sub">人才库</div></div>
+    <div class="stat"><div class="label">在库</div><div class="num" id="statActive" style="background:linear-gradient(135deg,#10b981,#059669);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">可联系</div></div>
+    <div class="stat"><div class="label">面试中</div><div class="num" id="statInterview" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">流程中</div></div>
+    <div class="stat"><div class="label">黑名单</div><div class="num" id="statBlacklist" style="background:linear-gradient(135deg,#ef4444,#b91c1c);-webkit-background-clip:text;background-clip:text;color:transparent">-</div><div class="sub">已拉黑</div></div>
+  </div>
 
-    <div style="margin-bottom: 12px; color: #666; font-size: 13px;">
-      共 <span class="count-badge" id="totalCount">0</span> 位人才
-    </div>
+  <!-- 工具栏 -->
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="🔍 搜索姓名/手机/微信/邮箱/备注..." />
+    <select id="statusFilter">
+      <option value="">全部状态</option>
+      <option>在库</option>
+      <option>面试</option>
+      <option>已联系</option>
+      <option>黑名单</option>
+    </select>
+    <select id="positionFilter">
+      <option value="">全部岗位</option>
+      <option>销售</option>
+      <option>主播</option>
+      <option>短视频运营</option>
+      <option>短视频拍摄/剪辑</option>
+      <option>投流手</option>
+      <option>美工/设计</option>
+      <option>业务中台</option>
+      <option>数据中台</option>
+      <option>人事</option>
+    </select>
+    <button class="refresh" id="refreshBtn" onclick="loadList(true)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+        <path d="M21 3v5h-5"/>
+      </svg>
+      刷新
+    </button>
+  </div>
 
-    <div class="add-form" id="addForm">
-      <div class="form-title" id="formTitle">添加人才</div>
-      <div class="form-grid">
-        <div><label>姓名 *</label><input type="text" id="fName" required></div>
-        <div><label>电话</label><input type="text" id="fPhone" placeholder="11位手机号"></div>
-        <div><label>微信</label><input type="text" id="fWechat"></div>
-        <div><label>邮箱</label><input type="email" id="fEmail"></div>
-        <div>
-          <label>目标岗位</label>
+  <!-- 列表 -->
+  <div class="list" id="list"></div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modal-bg" id="editModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="formTitle">添加人才</h2>
+      <button class="modal-close" onclick="hideForm()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid-2">
+        <div class="form-row"><label>姓名 <span style="color:var(--danger)">*</span></label><input type="text" id="fName" placeholder="必填"></div>
+        <div class="form-row"><label>手机号</label><input type="tel" id="fPhone"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>微信号</label><input type="text" id="fWechat"></div>
+        <div class="form-row"><label>邮箱</label><input type="email" id="fEmail"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>应聘岗位</label>
           <select id="fPosition">
-            <option value="">-- 选岗位 --</option>
-            <option value="销售">销售</option>
-            <option value="主播">主播</option>
-            <option value="短视频">短视频</option>
-            <option value="投流手">投流手</option>
-            <option value="美工">美工</option>
-            <option value="数据中台">数据中台</option>
-            <option value="人事">人事</option>
-            <option value="其他">其他</option>
+            <option value="">--</option>
+            <option>销售</option><option>主播</option><option>短视频运营</option>
+            <option>短视频拍摄/剪辑</option><option>投流手</option><option>美工/设计</option>
+            <option>业务中台</option><option>数据中台</option><option>人事</option>
           </select>
         </div>
-        <div>
-          <label>来源渠道</label>
+        <div class="form-row"><label>来源</label>
           <select id="fSource">
-            <option value="">-- 选来源 --</option>
-            <option value="BOSS直聘">BOSS直聘</option>
-            <option value="智联招聘">智联招聘</option>
-            <option value="前程无忧">前程无忧</option>
-            <option value="脉脉">脉脉</option>
-            <option value="猎聘">猎聘</option>
-            <option value="官网投递">官网投递</option>
-            <option value="内推">内推</option>
-            <option value="其他">其他</option>
+            <option value="">--</option>
+            <option>BOSS直聘</option><option>智联招聘</option><option>前程无忧</option>
+            <option>脉脉</option><option>猎聘</option><option>公司官网</option>
+            <option>内推</option><option>朋友介绍</option><option>在线简历</option>
           </select>
-        </div>
-        <div>
-          <label>评级</label>
-          <select id="fRating">
-            <option value="A">A - 优秀</option>
-            <option value="B" selected>B - 良好</option>
-            <option value="C">C - 一般</option>
-            <option value="D">D - 不合适</option>
-          </select>
-        </div>
-        <div>
-          <label>状态</label>
-          <select id="fStatus">
-            <option value="在库" selected>在库</option>
-            <option value="已联系">已联系</option>
-            <option value="已入职">已入职</option>
-            <option value="已淘汰">已淘汰</option>
-            <option value="黑名单">🚫 黑名单</option>
-          </select>
-        </div>
-        <div><label>录入人</label><input type="text" id="fCreatedBy" placeholder="你的姓名"></div>
-        <div class="full">
-          <label>备注 / 沟通记录</label>
-          <textarea id="fNotes" placeholder="能力特长、沟通要点、跟进计划等..."></textarea>
         </div>
       </div>
-      <div class="form-actions">
-        <button class="btn btn-secondary" onclick="resetForm()">取消</button>
-        <button class="btn btn-primary" onclick="saveTalent()">保存</button>
+      <div class="form-grid-2">
+        <div class="form-row"><label>评级</label>
+          <select id="fRating"><option>A</option><option selected>B</option><option>C</option></select>
+        </div>
+        <div class="form-row"><label>状态</label>
+          <select id="fStatus"><option>在库</option><option>面试</option><option>已联系</option></select>
+        </div>
       </div>
+      <div class="form-row"><label>备注</label><textarea id="fNotes" placeholder="技能 / 经历 / 沟通要点..."></textarea></div>
+      <div class="form-row"><label>录入人</label><input type="text" id="fCreatedBy" placeholder="如：人事-小李"></div>
     </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>姓名</th>
-            <th>电话</th>
-            <th>岗位</th>
-            <th>来源</th>
-            <th>评级</th>
-            <th>状态</th>
-            <th>更新时间</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody id="talentList">
-          <tr><td colspan="8" class="empty">加载中...</td></tr>
-        </tbody>
-      </table>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="hideForm()">取消</button>
+      <button class="btn-primary" id="saveBtn" onclick="saveTalent()">保存</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">操作成功</div>
+<!-- 鉴权弹窗 -->
+<div class="modal-bg" id="authModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head">
+      <h2>🔐 人事专员登录</h2>
+      <button class="modal-close" onclick="hideAuth()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>通行令牌</label>
+        <input type="password" id="authToken" placeholder="请输入 HR 通行令牌" onkeydown="if(event.key==='Enter')doAuth()">
+      </div>
+      <p style="font-size:12px;color:var(--text-lighter);text-align:center;margin-top:8px">
+        仅人事专员可编辑，其他用户为只读
+      </p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="hideAuth()">取消</button>
+      <button class="btn-primary" onclick="doAuth()">登录</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const API_BASE = 'https://universe-fall-return-hosts.trycloudflare.com';
-let editingId = null;
+const API_BASE = 'https://translate-consultation-layer-emails.trycloudflare.com';
+const TOKEN_KEY = 'talent_admin_token';
+const CACHE_KEY = 'talent_cache_v1';
+const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
+
 let allItems = [];
-let adminToken = localStorage.getItem('talent_admin_token') || '';
+let editingId = null;
+let adminToken = localStorage.getItem(TOKEN_KEY) || '';
+let isLoading = false;
 
-function isAdmin() { return !!adminToken; }
+// ============ 缓存：立即渲染 ============
+function loadFromCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const c = JSON.parse(raw);
+    if (Date.now() - c.ts > CACHE_TTL) return null;
+    return c.list || [];
+  } catch (e) { return null; }
+}
+function saveToCache(list) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), list }));
+  } catch (e) {}
+}
+function clearCache() { localStorage.removeItem(CACHE_KEY); }
 
+// ============ Toast ============
 let toastTimer = null;
 function showToast(msg, isError, duration = 2500) {
   const t = document.getElementById('toast');
   if (!t) return;
   if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
-  t.classList.remove('show', 'hiding', 'error');
+  t.className = 'toast' + (isError ? ' error' : '');
   t.textContent = msg;
   void t.offsetWidth;
-  t.className = 'toast' + (isError ? ' error' : '');
   requestAnimationFrame(() => t.classList.add('show'));
-  toastTimer = setTimeout(() => {
-    t.classList.remove('show');
-    t.classList.add('hiding');
-    setTimeout(() => t.classList.remove('hiding', 'error'), 400);
-    toastTimer = null;
-  }, duration);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
+// ============ 鉴权 ============
+function isAdmin() { return !!adminToken; }
 function updateAuthUI() {
-  const bar = document.getElementById('authBar');
+  const btn = document.getElementById('authBtn');
   if (isAdmin()) {
-    document.getElementById('authStatus').textContent = '✅ 人事专员模式';
-    document.getElementById('authBtn').textContent = '退出';
-    document.getElementById('authBtn').onclick = logout;
+    btn.className = 'admin-on';
+    btn.innerHTML = '✅ 已登录';
+    btn.onclick = logout;
   } else {
-    document.getElementById('authStatus').textContent = '🔒 只读模式';
-    document.getElementById('authBtn').textContent = '人事专员登录';
-    document.getElementById('authBtn').onclick = showAuthModal;
+    btn.className = '';
+    btn.innerHTML = '🔒 人事登录';
+    btn.onclick = showAuth;
   }
   renderList();
 }
-
-function showAuthModal() { document.getElementById('authModal').classList.add('show'); document.getElementById('authToken').focus(); }
-function hideAuthModal() { document.getElementById('authModal').classList.remove('show'); document.getElementById('authToken').value = ''; }
-
+function showAuth() { document.getElementById('authModal').classList.add('show'); document.getElementById('authToken').focus(); }
+function hideAuth() { document.getElementById('authModal').classList.remove('show'); document.getElementById('authToken').value = ''; }
 async function doAuth() {
   const token = document.getElementById('authToken').value.trim();
-  if (!token) { showToast('请输入令牌', true); return; }
+  if (!token) return showToast('请输入令牌', true);
   try {
     const resp = await fetch(API_BASE + '/api/talent/auth', {
       method: 'POST',
@@ -667,88 +456,173 @@ async function doAuth() {
     const data = await resp.json();
     if (data.success) {
       adminToken = token;
-      localStorage.setItem('talent_admin_token', token);
-      hideAuthModal();
+      localStorage.setItem(TOKEN_KEY, token);
+      hideAuth();
       updateAuthUI();
-      showToast('✅ 人事专员验证成功，可以编辑人才库');
+      showToast('✅ 验证成功，已解锁编辑权限');
     } else {
       throw new Error(data.error || '令牌错误');
     }
-  } catch (e) {
-    showToast('验证失败：' + e.message, true);
-  }
+  } catch (e) { showToast('验证失败：' + e.message, true); }
 }
-
 function logout() {
   if (!confirm('退出人事专员模式？')) return;
   adminToken = '';
-  localStorage.removeItem('talent_admin_token');
+  localStorage.removeItem(TOKEN_KEY);
   updateAuthUI();
-  showToast('已退出人事专员模式');
+  showToast('已退出');
 }
 
-async function loadList() {
-  const kw = document.getElementById('searchInput').value;
+// ============ 列表 ============
+async function loadList(force = false) {
+  if (isLoading) return;
+  isLoading = true;
+  const refreshBtn = document.getElementById('refreshBtn');
+  refreshBtn.classList.add('loading');
+
+  // 1. 立即用缓存渲染（不阻塞）
+  if (!force) {
+    const cached = loadFromCache();
+    if (cached && cached.length > 0) {
+      allItems = cached;
+      renderList();
+    } else {
+      renderSkeleton();
+    }
+  } else {
+    renderSkeleton();
+  }
+
+  // 2. 后台 fetch 最新
+  const kw = document.getElementById('searchInput').value.trim();
   const status = document.getElementById('statusFilter').value;
   const position = document.getElementById('positionFilter').value;
   const params = new URLSearchParams();
   if (kw) params.set('keyword', kw);
   if (status) params.set('status', status);
   if (position) params.set('position', position);
+
   try {
-    const resp = await fetch(API_BASE + '/api/talent?' + params.toString());
+    const ctrl = new AbortController();
+    const timeoutId = setTimeout(() => ctrl.abort(), 15000);
+    const resp = await fetch(API_BASE + '/api/talent?' + params.toString(), { signal: ctrl.signal });
+    clearTimeout(timeoutId);
     const data = await resp.json();
     if (data.success) {
       allItems = data.list;
+      saveToCache(allItems); // 缓存最新
       renderList();
+    } else {
+      throw new Error(data.error || '加载失败');
     }
   } catch (e) {
-    showToast('加载失败：' + e.message, true);
+    if (e.name === 'AbortError') {
+      showToast('请求超时，请检查网络', true);
+    }
+    if (!allItems.length) renderError(e.message || '网络错误');
+  } finally {
+    isLoading = false;
+    refreshBtn.classList.remove('loading');
   }
 }
 
+function renderSkeleton() {
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = Array(3).fill(0).map(() => `
+    <div class="skeleton-item">
+      <div class="skeleton sk-avatar"></div>
+      <div class="sk-info">
+        <div class="skeleton sk-line" style="width: 40%"></div>
+        <div class="skeleton sk-line" style="width: 70%"></div>
+        <div class="skeleton sk-line" style="width: 50%"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderError(msg) {
+  document.getElementById('list').innerHTML = `
+    <div class="error">
+      <div class="icon">⚠️</div>
+      <div class="title">加载失败</div>
+      <div class="desc">${escape(msg)}</div>
+      <button onclick="loadList(true)">🔄 重新加载</button>
+    </div>
+  `;
+}
+
 function renderList() {
-  const tbody = document.getElementById('talentList');
-  document.getElementById('totalCount').textContent = allItems.length;
-  if (allItems.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无数据，点上方「添加人才」开始录入</td></tr>';
+  const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const position = document.getElementById('positionFilter').value;
+  let items = allItems;
+  if (kw) items = items.filter(t =>
+    (t.name||'').toLowerCase().includes(kw) ||
+    (t.phone||'').includes(kw) ||
+    (t.wechat||'').toLowerCase().includes(kw) ||
+    (t.email||'').toLowerCase().includes(kw) ||
+    (t.notes||'').toLowerCase().includes(kw)
+  );
+  if (status) items = items.filter(t => t.status === status);
+  if (position) items = items.filter(t => t.position === position);
+
+  // 统计（用全部数据，不是过滤后）
+  const total = allItems.length;
+  const active = allItems.filter(t => t.status === '在库').length;
+  const interview = allItems.filter(t => t.status === '面试').length;
+  const blacklist = allItems.filter(t => t.status === '黑名单').length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statInterview').textContent = interview;
+  document.getElementById('statBlacklist').textContent = blacklist;
+
+  const listEl = document.getElementById('list');
+  if (!items.length) {
+    listEl.innerHTML = allItems.length === 0
+      ? `<div class="empty"><div class="icon">📭</div><div class="title">人才库还是空的</div><div class="desc">点击右上角"+ 添加人才"开始录入，或等待简历投递</div></div>`
+      : `<div class="empty"><div class="icon">🔍</div><div class="title">没找到匹配的人才</div><div class="desc">试试调整搜索词或筛选条件</div></div>`;
     return;
   }
-  tbody.innerHTML = allItems.map(t => {
+
+  listEl.innerHTML = items.map(t => {
     const isBlacklist = t.status === '黑名单';
-    const actionBtns = isAdmin() ? (
-      isBlacklist ?
-        `<button class="btn btn-edit" onclick="restoreTalent(${t.id})">解除</button>
-         <button class="btn btn-danger" onclick="deleteTalent(${t.id})">删除</button>` :
-        `<button class="btn btn-edit" onclick="editTalent(${t.id})">编辑</button>
-         <button class="btn btn-danger" onclick="blacklistTalent(${t.id})">拉黑</button>
-         <button class="btn btn-danger" onclick="deleteTalent(${t.id})">删除</button>`
-    ) : `<span style="color:#bbb;font-size:12px">只读</span>`;
-    const rowClass = isBlacklist ? 'blacklist-row' : '';
-    return `<tr class="${rowClass}">
-      <td><b class="${isBlacklist ? 'name-strike' : ''}">${escape(t.name)}</b>${t.wechat ? '<br><span style="color:#999;font-size:12px">wx: ' + escape(t.wechat) + '</span>' : ''}</td>
-      <td>${t.phone ? '<a href="tel:' + escape(t.phone) + '">' + escape(t.phone) + '</a>' : '—'}</td>
-      <td>${escape(t.position) || '—'}</td>
-      <td>${escape(t.source) || '—'}</td>
-      <td><span class="rating ${t.rating}">${t.rating || 'B'}</span></td>
-      <td><span class="status ${t.status}">${isBlacklist ? '🚫 ' : ''}${t.status || '在库'}</span></td>
-      <td style="color:#999;font-size:12px">${formatTime(t.updated_at)}</td>
-      <td>${actionBtns}</td>
-    </tr>`;
+    const initial = (t.name || '?').slice(0, 1).toUpperCase();
+    const actions = isAdmin() ? (
+      isBlacklist
+        ? `<button class="success" onclick="restoreTalent(${t.id})">解除</button><button class="danger" onclick="deleteTalent(${t.id})">删除</button>`
+        : `<button class="edit" onclick="editTalent(${t.id})">编辑</button><button class="danger" onclick="blacklistTalent(${t.id})">拉黑</button>`
+    ) : '<div class="readonly">只读</div>';
+    return `<div class="item ${isBlacklist ? 'blacklist' : ''}">
+      <div class="avatar">${escape(initial)}</div>
+      <div class="info">
+        <div class="name">
+          <span class="${isBlacklist ? 'strike' : ''}">${escape(t.name)}</span>
+          ${t.position ? `<span class="tag position">${escape(t.position)}</span>` : ''}
+          <span class="tag ${t.rating || 'B'}">${t.rating || 'B'}</span>
+          ${t.status ? `<span class="tag ${escape(t.status)}">${isBlacklist ? '🚫 ' : ''}${escape(t.status)}</span>` : ''}
+        </div>
+        <div class="meta">
+          ${t.phone ? `<span>📱 <a href="tel:${escape(t.phone)}" style="color:inherit;text-decoration:none">${escape(t.phone)}</a></span>` : ''}
+          ${t.wechat ? `<span>💬 ${escape(t.wechat)}</span>` : ''}
+          ${t.email ? `<span>📧 ${escape(t.email)}</span>` : ''}
+          ${t.source ? `<span>📢 ${escape(t.source)}</span>` : ''}
+        </div>
+        ${t.notes ? `<div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.5">${escape(t.notes).slice(0, 100)}${t.notes.length > 100 ? '...' : ''}</div>` : ''}
+      </div>
+      <div class="actions">${actions}</div>
+    </div>`;
   }).join('');
 }
 
 function escape(s) { return s ? String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]) : ''; }
-function formatTime(t) { if (!t) return '—'; const d = new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
+// ============ 编辑表单 ============
 function toggleForm() {
-  if (!isAdmin()) { showAuthModal(); return; }
-  document.getElementById('addForm').classList.toggle('show');
-  if (!document.getElementById('addForm').classList.contains('show')) {
-    resetForm();
-  }
+  if (!isAdmin()) { showAuth(); return; }
+  document.getElementById('editModal').classList.add('show');
+  resetForm();
 }
-
+function hideForm() { document.getElementById('editModal').classList.remove('show'); }
 function resetForm() {
   editingId = null;
   document.getElementById('formTitle').textContent = '添加人才';
@@ -758,8 +632,8 @@ function resetForm() {
   document.getElementById('fRating').value = 'B';
   document.getElementById('fStatus').value = '在库';
 }
-
 function editTalent(id) {
+  if (!isAdmin()) return;
   const t = allItems.find(x => x.id === id);
   if (!t) return;
   editingId = id;
@@ -774,14 +648,12 @@ function editTalent(id) {
   document.getElementById('fStatus').value = t.status || '在库';
   document.getElementById('fNotes').value = t.notes || '';
   document.getElementById('fCreatedBy').value = t.created_by || '';
-  document.getElementById('addForm').classList.add('show');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('editModal').classList.add('show');
 }
-
 async function saveTalent() {
-  if (!isAdmin()) { showAuthModal(); return; }
+  if (!isAdmin()) return;
   const name = document.getElementById('fName').value.trim();
-  if (!name) { showToast('请填写姓名', true); return; }
+  if (!name) return showToast('请填写姓名', true);
   const data = {
     name,
     phone: document.getElementById('fPhone').value.trim(),
@@ -791,33 +663,34 @@ async function saveTalent() {
     source: document.getElementById('fSource').value,
     rating: document.getElementById('fRating').value,
     status: document.getElementById('fStatus').value,
-    notes: document.getElementById('fNotes').value,
+    notes: document.getElementById('fNotes').value.trim(),
     created_by: document.getElementById('fCreatedBy').value.trim(),
   };
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '保存中...';
   try {
     const url = editingId ? (API_BASE + '/api/talent/' + editingId) : (API_BASE + '/api/talent');
+    const method = editingId ? 'PUT' : 'POST';
     const resp = await fetch(url, {
-      method: editingId ? 'PUT' : 'POST',
+      method,
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
       body: JSON.stringify(data)
     });
     const result = await resp.json();
     if (result.success) {
       showToast(editingId ? '✅ 已更新' : '✅ 已添加');
-      resetForm();
-      document.getElementById('addForm').classList.remove('show');
-      loadList();
+      hideForm();
+      await loadList(true);
     } else {
       throw new Error(result.error || '保存失败');
     }
-  } catch (e) {
-    showToast('保存失败：' + e.message, true);
-  }
+  } catch (e) { showToast('保存失败：' + e.message, true); }
+  finally { btn.disabled = false; btn.textContent = '保存'; }
 }
-
 async function deleteTalent(id) {
-  if (!isAdmin()) { showAuthModal(); return; }
-  if (!confirm('确认删除这位人才？此操作不可恢复')) return;
+  if (!isAdmin()) return;
+  if (!confirm('确认删除该人才？此操作不可恢复。')) return;
   try {
     const resp = await fetch(API_BASE + '/api/talent/' + id, {
       method: 'DELETE',
@@ -826,23 +699,14 @@ async function deleteTalent(id) {
     const data = await resp.json();
     if (data.success) {
       showToast('✅ 已删除');
-      loadList();
-    } else {
-      throw new Error(data.error || '删除失败');
-    }
-  } catch (e) {
-    showToast('删除失败：' + e.message, true);
-  }
+      await loadList(true);
+    } else throw new Error(data.error || '删除失败');
+  } catch (e) { showToast('删除失败：' + e.message, true); }
 }
-
 async function blacklistTalent(id) {
-  if (!isAdmin()) { showAuthModal(); return; }
-  const t = allItems.find(x => x.id === id);
-  const name = t ? t.name : '该人才';
-  const reason = prompt(`拉黑 ${name}\n\n请输入拉黑原因（必填）：`, '');
-  if (reason === null) return; // 取消
-  if (!reason.trim()) { showToast('请填写拉黑原因', true); return; }
-  if (!confirm(`确认将 ${name} 拉入黑名单？\n\n原因：${reason}\n\n此操作后该人选永不录用！`)) return;
+  if (!isAdmin()) return;
+  const reason = prompt('拉黑原因（必填）:');
+  if (!reason || !reason.trim()) return;
   try {
     const resp = await fetch(API_BASE + '/api/talent/' + id + '/blacklist', {
       method: 'POST',
@@ -851,46 +715,34 @@ async function blacklistTalent(id) {
     });
     const data = await resp.json();
     if (data.success) {
-      showToast('🚫 已拉黑：' + name);
-      loadList();
-    } else {
-      throw new Error(data.error || '操作失败');
-    }
-  } catch (e) {
-    showToast('拉黑失败：' + e.message, true);
-  }
+      showToast('✅ 已拉黑');
+      await loadList(true);
+    } else throw new Error(data.error || '操作失败');
+  } catch (e) { showToast('失败：' + e.message, true); }
 }
-
 async function restoreTalent(id) {
-  if (!isAdmin()) { showAuthModal(); return; }
-  const t = allItems.find(x => x.id === id);
-  const name = t ? t.name : '该人才';
-  if (!confirm(`确认将 ${name} 移出黑名单？\n\n状态会恢复为"在库"`)) return;
+  if (!isAdmin()) return;
   try {
     const resp = await fetch(API_BASE + '/api/talent/' + id + '/restore', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + adminToken }
     });
     const data = await resp.json();
-    if (data.success) {
-      showToast('✅ 已恢复：' + name);
-      loadList();
-    } else {
-      throw new Error(data.error || '操作失败');
-    }
-  } catch (e) {
-    showToast('恢复失败：' + e.message, true);
-  }
+    if (data.success) { showToast('✅ 已解除黑名单'); await loadList(true); }
+    else throw new Error(data.error || '操作失败');
+  } catch (e) { showToast('失败：' + e.message, true); }
 }
 
-// 事件绑定
-document.getElementById('searchInput').addEventListener('input', debounce(loadList, 400));
-document.getElementById('statusFilter').addEventListener('change', loadList);
-document.getElementById('positionFilter').addEventListener('change', loadList);
-document.getElementById('authToken').addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
-function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+// ============ 事件 ============
+let debounceTimer = null;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => renderList(), 200);
+});
+document.getElementById('statusFilter').addEventListener('change', renderList);
+document.getElementById('positionFilter').addEventListener('change', renderList);
 
-// 初始加载
+// ============ 启动 ============
 updateAuthUI();
 loadList();
 </script>
