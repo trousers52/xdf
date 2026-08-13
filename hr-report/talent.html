@@ -701,8 +701,6 @@ function escape(s) { return s ? String(s).replace(/[&<>"']/g, c => ({'&':'&amp;'
 
 // ============ 人才详情 ============
 function showTalentDetail(id) {
-  showToast('查看详情: id=' + id + ' 共 ' + allItems.length + ' 人');
-  console.log('[showTalentDetail] id=', id, 'allItems.length=', allItems.length);
   const t = allItems.find(x => x.id === id);
   if (!t) {
     showToast('未找到该人才 id=' + id, true);
@@ -740,9 +738,16 @@ function showTalentDetail(id) {
       <span>🔄 更新：<b style="color:#475569">${formatTime(t.updated_at)}</b></span>
     </div>
   `;
-  document.getElementById('detailModal').classList.add('show');
+  // 强制用 inline style 显示（避免 CSS 加载顺序问题）
+  const modal = document.getElementById('detailModal');
+  modal.classList.add('show');
+  modal.style.cssText = 'display:flex !important; align-items:center; justify-content:center; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.5); backdrop-filter:blur(8px); padding:20px;';
 }
-function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
+function closeDetail() {
+  const modal = document.getElementById('detailModal');
+  modal.classList.remove('show');
+  modal.style.cssText = '';
+}
 
 // ============ 编辑表单 ============
 function toggleForm() {
