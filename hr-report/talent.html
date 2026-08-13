@@ -701,9 +701,16 @@ function escape(s) { return s ? String(s).replace(/[&<>"']/g, c => ({'&':'&amp;'
 
 // ============ 人才详情 ============
 function showTalentDetail(id) {
+  console.log('[showTalentDetail] called id=', id, 'allItems=', allItems.length);
   const t = allItems.find(x => x.id === id);
   if (!t) {
     showToast('未找到该人才 id=' + id, true);
+    return;
+  }
+  const modal = document.getElementById('detailModal');
+  console.log('[showTalentDetail] modal element:', modal);
+  if (!modal) {
+    alert('BUG: detailModal 元素不存在！');
     return;
   }
   const tags = (t.tags || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -738,10 +745,24 @@ function showTalentDetail(id) {
       <span>🔄 更新：<b style="color:#475569">${formatTime(t.updated_at)}</b></span>
     </div>
   `;
-  // 强制用 inline style 显示（避免 CSS 加载顺序问题）
+  // 强制用 inline style 显示
   const modal = document.getElementById('detailModal');
   modal.classList.add('show');
-  modal.style.cssText = 'display:flex !important; align-items:center; justify-content:center; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.5); backdrop-filter:blur(8px); padding:20px;';
+  // 同时移除 .modal-bg 默认的 display: none
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.zIndex = '9999';
+  modal.style.background = 'rgba(15, 23, 42, 0.5)';
+  modal.style.backdropFilter = 'blur(8px)';
+  modal.style.padding = '20px';
+  console.log('[showTalentDetail] modal styled. Display:', modal.style.display, 'classList:', modal.className);
+  console.log('[showTalentDetail] innerHTML length:', document.getElementById('detailBody').innerHTML.length);
+  // 验证 DOM 计算样式
+  const cs = window.getComputedStyle(modal);
+  console.log('[showTalentDetail] computed display:', cs.display, 'z-index:', cs.zIndex, 'position:', cs.position);
 }
 function closeDetail() {
   const modal = document.getElementById('detailModal');
