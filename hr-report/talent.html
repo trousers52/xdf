@@ -701,8 +701,13 @@ function escape(s) { return s ? String(s).replace(/[&<>"']/g, c => ({'&':'&amp;'
 
 // ============ 人才详情 ============
 function showTalentDetail(id) {
+  showToast('查看详情: id=' + id + ' 共 ' + allItems.length + ' 人');
+  console.log('[showTalentDetail] id=', id, 'allItems.length=', allItems.length);
   const t = allItems.find(x => x.id === id);
-  if (!t) return showToast('未找到该人才', true);
+  if (!t) {
+    showToast('未找到该人才 id=' + id, true);
+    return;
+  }
   const tags = (t.tags || '').split(',').map(s => s.trim()).filter(Boolean);
   const tagsHtml = tags.length
     ? `<div style="display:flex;gap:6px;flex-wrap:wrap">${tags.map(x => `<span class="tag" style="background:#eef2ff;color:#4f46e5;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600">🏷️ ${escape(x)}</span>`).join('')}</div>`
